@@ -11,8 +11,16 @@ folders:
         to: /home/vagrant/code
 sites:
     -
-        map: soapboxhq.test
-        to: /home/vagrant/code/authentication-service/public
+        map: email-service.test
+        to: /home/vagrant/code/email-service/public
+
+    -
+        map: auth-service.test
+        to: /home/vagrant/code/auth-service/public
+
+    -
+        map: api-gateway.test
+        to: /home/vagrant/code/api-gateway/public
 databases:
     - homestead
 features:
