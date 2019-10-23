@@ -9,7 +9,15 @@
 </head>
 
 <body>
-
+  <form>
+    <button
+      type="button"
+      name="button"
+      id="generate_btn"
+      >
+      Generate jwt token
+    </button>
+  </form>
 </body>
 <script>
 	// We can get the token from the "access_token" query
@@ -17,25 +25,30 @@
   const query = window.location.search.substring(1)
 	const token = query.split('access_token=')[1]
 
-  let headers = new Headers();
-  headers.append('Content-Type', 'application/json');
-  headers.append('Accept', 'application/json');
-  headers.append('Authorization', 'token ' + token);
-  headers.append('Origin','http://localhost:8080');
+  document.getElementById("generate_btn").addEventListener("click", function(){
+    //pass this token and the provider to auth_service
+    // alert(`${token}`)
+    //make an ajax request to auth server passing the oauth token along in the request data
 
-  fetch('//api.github.com/user', {
-    mode: 'cors',
-    credentials: 'include',
-    method: 'GET',
-    headers: headers
-  })
-  .then(res => {
-    // const nameNode = document.createTextNode(`Welcome, ${res.name}`)
-		// document.body.appendChild(nameNode)
-  })
-  .catch(error => {
-    console.log(error);
-  })
+  // let headers = new Headers();
+  // headers.append('Content-Type', 'application/json');
+  // headers.append('Accept', 'application/json');
+  // headers.append('Authorization', 'token ' + token);
+  // headers.append('Origin','http://localhost:8080');
+  //
+  // fetch('//api.github.com/user', {
+  //   mode: 'cors',
+  //   credentials: 'include',
+  //   method: 'GET',
+  //   headers: headers
+  // })
+  // .then(res => {
+  //   const nameNode = document.createTextNode(`Welcome, ${res.name}`)
+	// 	document.body.appendChild(nameNode)
+  // })
+  // .catch(error => {
+  //   console.log(error);
+  // })
 </script>
 
 </html>
