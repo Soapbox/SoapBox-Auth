@@ -20,6 +20,10 @@ composer install
 cd ../email-service
 composer install
 
+# adding to etc/hosts file
+sudo -- sh -c -e "echo '192.168.10.10  auth-service.test' >> /etc/hosts";
+sudo -- sh -c -e "echo '192.168.10.10  api-gateway.test' >> /etc/hosts";
+
 # run vagrant up in root
 cd ../
 vagrant up
