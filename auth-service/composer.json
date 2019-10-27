@@ -10,8 +10,8 @@
         "firebase/php-jwt": "^5.0",
         "illuminate/redis": "^6.3",
         "laravel/lumen-framework": "^6.0",
-        "laravel/socialite": "^4.2",
-        "predis/predis": "^1.1"
+        "predis/predis": "^1.1",
+        "socialiteproviders/google": "^3.0"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.4",
