@@ -18,7 +18,7 @@ class AuthController extends Controller
 	{
 		$this->validate($request, [
 			'code' => 'required|string',
-			'provider' => 'required'
+			'provider' => 'required|string'
 		]);
 
 		try {
