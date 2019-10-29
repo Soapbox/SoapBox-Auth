@@ -27,8 +27,8 @@ class AuthController extends Controller
 			$statusCode = 200;
 			app('redis')->sAdd(env('REDIS_KEY'), $jwt);
 		} catch (\Exception $e) {
-			$user = null;
-			$statusCode = 404;
+			$jwt = null;
+			$statusCode = $e->getCode();
 			$msg = $e->getMessage();
 		}
 
