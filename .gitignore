@@ -1,3 +1,4 @@
 vendor/
 web_client/node_modules/
 .vagrant/
+*.DS_Store
