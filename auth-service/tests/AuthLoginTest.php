@@ -1,5 +1,7 @@
 <?php
 
+use Laravel\Socialite\Facades\Socialite;
+
 class AuthLoginTest extends TestCase
 {
 	/**
@@ -24,6 +26,24 @@ class AuthLoginTest extends TestCase
 				]
 			]
 		)->assertResponseStatus(422);
+	}
+
+	public function testGenerateJWTToken() {
+
+		$request = new Illuminate\Http\Request;
+		$request->oauth_code = "ll";
+		$request->provider = 'google';
+
+		$response["jwt"] = "jwt_token";
+		$response["status"] = 200;
+		$response["message"] = "Success";
+
+		$mock = Mockery::mock('App\Http\Controllers\AuthController');
+		$mock->shouldReceive('generateJWTToken')
+			->with($request)
+			->andReturn($response);
+
+		$this->assertSame($response, $mock->generateJWTToken($request));
 	}
 }
 
