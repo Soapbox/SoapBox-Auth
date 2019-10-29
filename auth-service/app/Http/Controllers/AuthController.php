@@ -25,9 +25,9 @@ class AuthController extends Controller
 
 		$response = $this->generateJWTToken($request);
 
-		if ($response["status"] === 200) {
-			app('redis')->sAdd(env('REDIS_KEY'), $response["jwt"]);
-		}
+//		if ($response["status"] === 200) {
+//			app('redis')->sAdd(env('REDIS_KEY'), $response["jwt"]);
+//		}
 
 		return response(
 			[
@@ -42,7 +42,7 @@ class AuthController extends Controller
 		$response = [];
 
 		try {
-			$socialProviderUser = Socialite::driver($request->provider)->stateless()->userFromToken($request->oauth_code);
+			$socialProviderUser = Socialite::driver($request->provider)->userFromToken($request->oauth_code);
 
 			if ($this->userExist($socialProviderUser)) {
 				$key = env('JWT_KEY');

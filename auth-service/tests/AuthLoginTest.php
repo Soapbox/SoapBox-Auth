@@ -1,5 +1,6 @@
 <?php
 
+use Firebase\JWT\JWT;
 use Laravel\Socialite\Facades\Socialite;
 
 class AuthLoginTest extends TestCase
@@ -30,20 +31,41 @@ class AuthLoginTest extends TestCase
 
 	public function testGenerateJWTToken() {
 
-		$request = new Illuminate\Http\Request;
-		$request->oauth_code = "ll";
-		$request->provider = 'google';
+		$abstractUser = Mockery::mock('Laravel\Socialite\Two\User');
+		$abstractUser->shouldReceive('getId')
+			->andReturn(1)
+			->shouldReceive('getName')
+			->andReturn('florence')
+			->shouldReceive('getEmail')
+			->andReturn('florence@gmail.com');
 
-		$response["jwt"] = "jwt_token";
-		$response["status"] = 200;
-		$response["message"] = "Success";
+		$provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
+		$provider->shouldReceive('userFromToken')->andReturn($abstractUser);
 
-		$mock = Mockery::mock('App\Http\Controllers\AuthController');
-		$mock->shouldReceive('generateJWTToken')
-			->with($request)
-			->andReturn($response);
+		Socialite::shouldReceive('driver')->with('google')->andReturn($provider);
 
-		$this->assertSame($response, $mock->generateJWTToken($request));
+
+
+//		$socialliteMock = Socialite::shouldReceive('driver->userFromToken')->andReturn($abstractUser);
+
+
+//		$this->json('POST', '/login', [
+//			'oauth_code' => 'ya29.Il-pBx5aS_JhAMwcBo5Ip_cWZ9W19TEYzRKlcLLqZkN4PaFEnrl24y8tXldBR-pPtWxKnwHKa8cpSsuxJXyW2OngfTwVS5G6HKe-KI3pXlP_3C0UdR1XRhYv1ebVwK-fgA',
+//			'provider' => 'google',
+//		])->seeJsonStructure(
+//			[
+//				'token', 'message'
+//			]
+//		)->assertResponseStatus(200);
+
+		$res = $this->json('POST', '/login', [
+			'oauth_code' => 'ya29.Il-pBx5aS_JhAMwcBo5Ip_cWZ9W19TEYzRKlcLLqZkN4PaFEnrl24y8tXldBR-pPtWxKnwHKa8cpSsuxJXyW2OngfTwVS5G6HKe-KI3pXlP_3C0UdR1XRhYv1ebVwK-fgA',
+			'provider' => 'google',
+		]);
+
+		$obj = json_decode($res->response->getContent());
+		$token = $obj->{'token'};
+		dd(JWT::decode($token, 'omlettedufromage', ['HS256']));
 	}
 }
 
