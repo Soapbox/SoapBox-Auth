@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -22,50 +23,39 @@ class AuthController extends Controller
 		]);
 
 		try {
-			$user = Socialite::driver($request->provider)->stateless()->userFromToken($request->oauth_code);
+			$jwt = $this->generateJWTToken($request);
 			$statusCode = 200;
+			app('redis')->sAdd(env('REDIS_KEY'), $jwt);
 		} catch (\Exception $e) {
 			$user = null;
 			$statusCode = 404;
 			$msg = $e->getMessage();
 		}
 
-
 		return response(
 			[
-				"token" => $user,
-				'status' => $user ? 'success' : $msg
+				"token" => $jwt,
+				'status' => $jwt ? 'success' : $msg
 			], $statusCode ?? 200
 		);
+	}
 
+	protected function generateJWTToken(Request $request)
+	{
+		$user = Socialite::driver($request->provider)->stateless()->userFromToken($request->oauth_code);
 
+		$key = env('JWT_KEY');
+		$exp = strtotime('+1 '. env('JWT_EXP'));
+		$token = array(
+			"iss" => "http://auth-server.test",
+			"aud" => "http://api-gateway.test",
+			"iat" => time(),
+			"exp" => $exp,
+			"name" => $user->name,
+			"email" => $user->email
+		);
 
-
-
-//		try{
-//			$user = Socialite::driver('google')->userFromToken($code);
-//		}
-//		catch (\Exception $ex) {
-//			return response($ex->getMessage(), 401);
-//		}
-//
-//		$key = env('JWT_KEY');
-//		$exp = strtotime('+1 '.env('JWT_EXP'));
-//		$token = array(
-//			"iss" => "http://auth-server.test",
-//			"aud" => "http://api-gateway.test",
-//			"iat" => time(),
-//			"exp" => $exp,
-//			"name" => $user->name,
-//			"email" => $user->email,
-//			"avatar" => $user->avatar
-//		);
-//
-//		$jwt = JWT::encode($token, $key, 'HS256');
-//
-//		app('redis')->sAdd(env('REDIS_KEY'), $jwt);
-//
-//		return response()->json(compact('token', 'jwt'),201);
+		return JWT::encode($token, $key, 'HS256');
 	}
 
 	public function logout(){}
