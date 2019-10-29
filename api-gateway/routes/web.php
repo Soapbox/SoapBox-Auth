@@ -14,3 +14,13 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+
+$router->get('/{any:.*}', [
+    "middleware" => "auth",
+    "uses" => "RouteController@get"
+]);
+
+$router->post('/{any:.*}', [
+    "middleware" => "auth",
+    "uses" => "RouteController@post"
+]);
