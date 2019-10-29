@@ -22,7 +22,7 @@ class AuthController extends Controller
 		]);
 
 		try {
-			$user = Socialite::driver($request->provider)->userFromToken($request->oauth_code);
+			$user = Socialite::driver($request->provider)->stateless()->userFromToken($request->oauth_code);
 			$statusCode = 200;
 		} catch (\Exception $e) {
 			$user = null;
