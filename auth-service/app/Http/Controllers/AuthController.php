@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redis;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\User as SocialProviderUser;
 
@@ -39,7 +38,7 @@ class AuthController extends Controller
 		$response = $this->generateJWTToken($request);
 
 		if ($response["status"] === 200) {
-//			app('redis')->sAdd(env('REDIS_KEY'), $response["jwt"]);
+			app('redis')->sAdd(env('REDIS_KEY'), $response["jwt"]);
 		}
 
 		return response(
