@@ -6,13 +6,13 @@
     "type": "project",
     "require": {
         "php": "^7.2",
+        "ext-json": "*",
         "barryvdh/laravel-dompdf": "^0.8.5",
         "firebase/php-jwt": "^5.0",
         "illuminate/redis": "^6.3",
         "laravel/lumen-framework": "^6.0",
         "predis/predis": "^1.1",
-        "socialiteproviders/google": "^3.0",
-      "ext-json": "*"
+        "socialiteproviders/google": "^3.0"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.4",
