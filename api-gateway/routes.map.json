@@ -2,6 +2,7 @@
     {
         "service": "email",
         "base-url": "email.soapboxhq.com",
+        "protocol": "http",
         "endpoints": {
             "POST": {
                 "send-email": {

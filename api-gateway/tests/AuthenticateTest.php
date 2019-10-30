@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 
 class AuthenticateTest extends TestCase
 {
-    var $jwt;
+    protected $jwt;
     public function setUp() : void
     {
         parent::setUp();
