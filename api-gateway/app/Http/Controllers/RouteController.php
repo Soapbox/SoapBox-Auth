@@ -63,25 +63,7 @@ class RouteController extends Controller
         if(!isset($this->url))
             return response(null, $this->code);
 
-        $options = [];
-
-        if($request->headers->has('Authorization'))
-            $options['headers'] = [
-                'Authorization' => $request->header('Authorization')
-            ];
-        
-        // forward parameters
-        $options['query'] = $request->all();
-
-        // make request
-        try {
-            $response = $this->client->request('GET', $this->url, $options);
-
-            return response()->json($response, 200);
-        }
-        catch (\Exception $e) {
-            return response($e->getMessage(), 500);
-        }
+        return $this->handler($request, 'query');
     }
 
     //
@@ -89,7 +71,30 @@ class RouteController extends Controller
     {
         if(!isset($this->url))
             return response(null, $this->code);
+        
+        return $this->handler($request, 'json');
+    }
 
+    //
+    public function put(Request $request)
+    {
+        if(!isset($this->url))
+            return response(null, $this->code);
+
+        return $this->handler($request, 'json');
+    }
+
+    //
+    public function delete(Request $request)
+    {
+        if(!isset($this->url))
+            return response(null, $this->code);
+
+        return $this->handler($request, 'json');
+    }
+
+    public function handler(Request $request, $option)
+    {
         $options = [];
 
         if($request->headers->has('Authorization'))
@@ -98,16 +103,20 @@ class RouteController extends Controller
             ];
         
         // forward parameters
-        $options['form_params'] = $request->all();
+        $options[$option] = $request->all();
 
         // make request
         try {
-            $response = $this->client->request('POST', $this->url, $options);
+            $response = $this->client->request($request->method(), $this->url, $options);
 
             return response()->json($response, 200);
         }
         catch (\Exception $e) {
-            return response($e->getMessage(), 500);
+            if ($e->hasResponse()) 
+                return response($e->getResponse()->getReasonPhrase(), 
+                    $e->getResponse()->getStatusCode());
+            else
+                return response($e->getMessage(), 500);
         }
     }
 }

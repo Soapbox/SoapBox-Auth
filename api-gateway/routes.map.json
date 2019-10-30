@@ -14,6 +14,18 @@
                     "url": "health-check",
                     "auth": false
                 }
+            },
+            "PUT": {
+                "address": {
+                    "url": "address",
+                    "auth": true
+                }
+            },
+            "DELETE": {
+                "records": {
+                    "url": "records",
+                    "auth": true
+                }
             }
         }
     }

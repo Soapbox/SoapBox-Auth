@@ -24,3 +24,13 @@ $router->post('/{any:.*}', [
     "middleware" => "auth",
     "uses" => "RouteController@post"
 ]);
+
+$router->put('/{any:.*}', [
+    "middleware" => "auth",
+    "uses" => "RouteController@put"
+]);
+
+$router->delete('/{any:.*}', [
+    "middleware" => "auth",
+    "uses" => "RouteController@delete"
+]);
