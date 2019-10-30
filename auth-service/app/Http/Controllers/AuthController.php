@@ -52,8 +52,8 @@ class AuthController extends Controller
 					"aud" => "http://api-gateway.test",
 					"iat" => time(),
 					"exp" => $exp,
-					"name" => $socialProviderUser->name,
-					"email" => $socialProviderUser->email
+					"name" => $socialProviderUser->getName(),
+					"email" => $socialProviderUser->getEmail()
 				);
 
 				$response["jwt"] = JWT::encode($token, $key, 'HS256');
