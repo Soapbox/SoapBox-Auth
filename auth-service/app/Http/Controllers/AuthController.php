@@ -86,7 +86,8 @@ class AuthController extends Controller
 		return $response;
 	}
 
-	protected function userExist(SocialProviderUser $user) {
+	protected function userExist(SocialProviderUser $user)
+	{
     	//TODO: confirm that $user->email record actually exist in the users table
 		//return 404 if $user does not exist
     	return true;
