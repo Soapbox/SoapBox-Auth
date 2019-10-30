@@ -49,7 +49,7 @@ class AuthController extends Controller
 		);
 	}
 
-	public function generateJWTToken(Request $request)
+	protected function generateJWTToken(Request $request)
 	{
 		$response = [];
 
