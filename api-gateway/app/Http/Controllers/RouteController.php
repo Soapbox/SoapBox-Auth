@@ -3,20 +3,21 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use GuzzleHttp\Client;
 
 class RouteController extends Controller
 {
-    var $url;
-    var $code;
-    var $client;
+    protected $url;
+    protected $code;
+    protected $client;
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(Request $request)
+    public function __construct(Request $request, Client $client = null)
     {
-        $this->client = new \GuzzleHttp\Client(['verify' => false]);
+        $this->client = $client ? $client : new Client;
         // fetch routes map
         $routes = json_decode(stripslashes(file_get_contents(__DIR__ . "/../../../routes.map.json")), true);
         
@@ -53,11 +54,7 @@ class RouteController extends Controller
         }
     }
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
+    //
     public function get(Request $request)
     {   
         if(!isset($this->url))
@@ -93,6 +90,9 @@ class RouteController extends Controller
         return $this->handler($request, 'json');
     }
 
+    /**
+     * this method forwards the requests to the appropriate service
+     */
     public function handler(Request $request, $option)
     {
         $options = [];
@@ -104,6 +104,9 @@ class RouteController extends Controller
         
         // forward parameters
         $options[$option] = $request->all();
+
+        // disable ssl validation
+        $options['verify'] = false;
 
         // make request
         try {
