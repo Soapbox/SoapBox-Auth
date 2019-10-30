@@ -120,11 +120,7 @@ class AuthLoginTest extends TestCase
 		$res = $this->json('POST', '/login', [
 			'oauth_code' => env('TEST_GOOGLE_OAUTH_CODE'),
 			'provider' => $this->test_driver,
-		])->seeJsonStructure(
-			[
-				'token', 'message'
-			]
-		);
+		]);
 
 		$obj = json_decode($res->response->getContent());
 		$token = $obj->{'token'};
