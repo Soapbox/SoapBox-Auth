@@ -39,7 +39,7 @@ class AuthController extends Controller
 		$response = $this->generateJWTToken($request);
 
 		if ($response["status"] === 200) {
-//			app('redis')->sAdd(env('REDIS_KEY'), $response["jwt"]);
+			app('redis')->sAdd(env('REDIS_KEY'), $response["jwt"]);
 		}
 
 		return response(

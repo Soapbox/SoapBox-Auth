@@ -68,6 +68,7 @@ class AuthLoginTest extends TestCase
 		]);
 
 		$obj = json_decode($res->response->getContent());
+		dd($obj);
 		$token = $obj->{'token'};
 		$decoded_payload = JWT::decode($token, env('JWT_KEY'), [env('JWT_ALGO')]);
 		$this->assertSame($abstractUser->getName(), $decoded_payload->name);
