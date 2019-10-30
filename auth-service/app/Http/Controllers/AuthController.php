@@ -9,15 +9,7 @@ use Laravel\Socialite\Two\User as SocialProviderUser;
 
 class AuthController extends Controller
 {
-
 	protected $supported_providers = ['google', 'slack', 'microsoft'];
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct() {}
 
     public function login(Request $request)
 	{
@@ -49,7 +41,7 @@ class AuthController extends Controller
 		);
 	}
 
-	protected function generateJWTToken(Request $request)
+	protected function generateJWTToken(Request $request) : array
 	{
 		$response = [];
 
@@ -86,10 +78,10 @@ class AuthController extends Controller
 		return $response;
 	}
 
-	protected function userExist(SocialProviderUser $user)
+	protected function userExist(SocialProviderUser $user) : bool
 	{
-    	//TODO: confirm that $user->email record actually exist in the users table
-		//return 404 if $user does not exist
+    	//TODO: confirm that $user->getEmail() record actually exist in the users table
+
     	return true;
     }
 
