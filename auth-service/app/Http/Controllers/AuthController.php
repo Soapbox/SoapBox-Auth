@@ -4,11 +4,15 @@ namespace App\Http\Controllers;
 
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redis;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\User as SocialProviderUser;
 
 class AuthController extends Controller
 {
+
+	protected $supported_providers = ['google', 'slack', 'microsoft'];
+
     /**
      * Create a new controller instance.
      *
@@ -23,11 +27,20 @@ class AuthController extends Controller
 			'provider' => 'required|string'
 		]);
 
+		if (!in_array($request->provider, $this->supported_providers)) {
+			return response(
+				[
+					"token" => null,
+					"message" => 'Provider not supported at this time.'
+				], 404
+			);
+		}
+
 		$response = $this->generateJWTToken($request);
 
-//		if ($response["status"] === 200) {
+		if ($response["status"] === 200) {
 //			app('redis')->sAdd(env('REDIS_KEY'), $response["jwt"]);
-//		}
+		}
 
 		return response(
 			[
@@ -47,6 +60,7 @@ class AuthController extends Controller
 			if ($this->userExist($socialProviderUser)) {
 				$key = env('JWT_KEY');
 				$exp = strtotime('+1 '. env('JWT_EXP'));
+
 				$token = array(
 					"iss" => "http://auth-server.test",
 					"aud" => "http://api-gateway.test",
@@ -56,7 +70,7 @@ class AuthController extends Controller
 					"email" => $socialProviderUser->getEmail()
 				);
 
-				$response["jwt"] = JWT::encode($token, $key, 'HS256');
+				$response["jwt"] = JWT::encode($token, $key);
 				$response["status"] = 200;
 				$response["message"] = "Success";
 			} else {
