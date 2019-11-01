@@ -3,7 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use \Firebase\JWT\JWT;
+use Firebase\JWT\JWT;
+use Illuminate\Http\Response;
 
 class Authenticate
 {
@@ -17,14 +18,13 @@ class Authenticate
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        if($request->headers->has('Authorization')) {
+        if ($request->headers->has('Authorization')) {
             // validate jwt
             $jwt = explode(" ", $request->header('Authorization'))[1];
 
-            if(!app('redis')->sIsMember(env('REDIS_KEY'), $jwt)){
-                return response('Unauthorized.', 401);
-            }
-            else{
+            if (!app('redis')->sIsMember(env('REDIS_KEY'), $jwt)) {
+                return response('Unauthorized.', Response::HTTP_UNAUTHORIZED);
+            } else {
                 // decode JWT and add to request
                 $decoded = JWT::decode($jwt, env('JWT_KEY'), array('HS256'));
 
@@ -35,16 +35,16 @@ class Authenticate
         }
 
         // add details to request for controller to work it's magic
-        try{
+        try {
             $path = explode("/", $request->path());
 
             $request->merge([
-                "service" =>$path[0],
-                "path" =>$path[1]
+                "service" => $path[0],
+                "path" => $path[1]
             ]);
-        }
-        catch (\Exception $ex) {
-            return response(null, 404);
+        } catch (\ErrorException $ex) {
+            // happens when the url sent is not in the form 'service/endpoint{anything can follow}'
+            return response(null, Response::HTTP_NOT_FOUND);
         }
 
         return $next($request);

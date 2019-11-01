@@ -5,94 +5,102 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\Services\RoutesMapService;
+use Illuminate\Http\Response;
 
 class RouteController extends Controller
 {
-    protected $url;
-    protected $code;
-    protected $client;
     /**
-     * Create a new controller instance.
+     * The final URL of the underlyng service referenced in this request
+     * @var String
+     */
+    protected $url;
+    /**
+     * The return code after evaluation of the request
+     * @var integer
+     */
+    protected $code;
+
+    /**
+     * An instance of the routes service
      *
+     * @var App\Services\RoutesMapService
+     */
+    protected $routesService;
+
+    /**
+     * Create a new controller instance,
+     * initialise guzzle client if needed,
+     * get route definition from routemap
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \GuzzleHttp\Client $client
      * @return void
      */
     public function __construct(Request $request, Client $client = null)
     {
-        $this->client = $client ? $client : new Client;
+        $client = $client ? $client : new Client();
         // fetch routes map
-        $routesService = new RoutesMapService();
-        $route = $routesService->getRoute($request);
+        $this->routesService = new RoutesMapService($client);
+        $route = $this->routesService->getRoute($request);
 
         $this->url = $route->url;
         $this->code = $route->code;
     }
 
-    //
+    /**
+     * Controller method for all get requests
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function get(Request $request)
-    {   
-        if(!isset($this->url))
-            return response(null, $this->code);
-
-        return $this->handler($request, 'query');
-    }
-
-    //
-    public function post(Request $request)
     {
-        if(!isset($this->url))
+        if (!isset($this->url)) {
             return response(null, $this->code);
-        
-        return $this->handler($request, 'json');
-    }
+        }
 
-    //
-    public function put(Request $request)
-    {
-        if(!isset($this->url))
-            return response(null, $this->code);
-
-        return $this->handler($request, 'json');
-    }
-
-    //
-    public function delete(Request $request)
-    {
-        if(!isset($this->url))
-            return response(null, $this->code);
-
-        return $this->handler($request, 'json');
+        return $this->routesService->handler($request, 'query', $this->url);
     }
 
     /**
-     * this method forwards the requests to the appropriate service
+     * Controller method for all post requests
+     *
+     * @return Illuminate\Http\Response
      */
-    public function handler(Request $request, $option)
+    public function post(Request $request)
     {
-        $options = [];
-
-        if($request->headers->has('Authorization'))
-            $options['headers'] = [
-                'Authorization' => $request->header('Authorization')
-            ];
-        
-        // forward parameters
-        $options[$option] = $request->all();
-
-        // disable ssl validation
-        $options['verify'] = false;
-
-        // make request
-        try {
-            $response = $this->client->request($request->method(), $this->url, $options);
-
-            return response()->json($response, 200);
+        if (!isset($this->url)) {
+            return response(null, $this->code);
         }
-        catch (\Exception $e) {
-            if ($e->hasResponse()) 
-                return response($e->getResponse()->getReasonPhrase(), 
-                    $e->getResponse()->getStatusCode());
-            else
-                return response($e->getMessage(), 500);
+
+        return $this->routesService->handler($request, 'json', $this->url);
+    }
+
+    /**
+     * Controller method for all put requests
+     *
+     * @return Illuminate\Http\Response
+     */
+    public function put(Request $request)
+    {
+        if (!isset($this->url)) {
+            return response(null, $this->code);
         }
+
+        return $this->routesService->handler($request, 'json', $this->url);
+    }
+
+    /**
+     * Controller method for all delete requests
+     *
+     * @return Illuminate\Http\Response
+     */
+    public function delete(Request $request)
+    {
+        if (!isset($this->url)) {
+            return response(null, $this->code);
+        }
+
+        return $this->routesService->handler($request, 'json', $this->url);
     }
 }
