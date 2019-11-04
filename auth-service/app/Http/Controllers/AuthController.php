@@ -8,7 +8,6 @@ use App\Services\TokenGeneratorService;
 
 class AuthController extends Controller
 {
-	protected $supported_providers = ['google', 'slack', 'microsoft'];
 
 	/**
 	 * @param Request $request
@@ -18,18 +17,9 @@ class AuthController extends Controller
     public function login(Request $request)
 	{
 		$this->validate($request, [
-			'oauth_code' => 'required|string',
-			'provider' => 'required|string'
+			'oauth_code' 	=> 'required|string',
+			'provider' 		=> 'required|in:'. 'google, slack, microsoft'
 		]);
-
-		if (!in_array($request->provider, $this->supported_providers)) {
-			return response(
-				[
-					"token" => null,
-					"message" => 'Provider not supported at this time.'
-				], Response::HTTP_UNPROCESSABLE_ENTITY
-			);
-		}
 
 		$tgs = TokenGeneratorService::generateToken($request);
 

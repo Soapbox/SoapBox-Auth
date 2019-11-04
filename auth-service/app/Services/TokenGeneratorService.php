@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use App\Exceptions\UserNotFoundException;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Facades\Socialite;
+use App\Exceptions\UserNotFoundException;
 use Laravel\Socialite\Two\User as SocialProviderUser;
 
 class TokenGeneratorService
@@ -83,6 +83,8 @@ class TokenGeneratorService
 	protected static function findOrFail(SocialProviderUser $user)
 	{
 		//TODO: confirm that $user->getEmail() record actually exist in the users table
+		//test does not cover this yet mainly because we have agreed to assume that this
+		//returns true always for now
 
 		$userExist = true;
 

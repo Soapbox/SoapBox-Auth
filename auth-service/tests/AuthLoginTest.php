@@ -28,6 +28,7 @@ class AuthLoginTest extends TestCase
 	}
 
 	public function testOnlySupportedProvidersAreAllowed() {
+
 		$this->json(
 			'POST', '/login', [
 				'oauth_code' => $this->test_oauth_code,
@@ -35,16 +36,15 @@ class AuthLoginTest extends TestCase
 			]
 		)->seeJson(
 			[
-				'token' => null,
-				'message' => 'Provider not supported at this time.'
+				'provider' => [
+					'The selected provider is invalid.'
+				]
 			]
 		)->assertResponseStatus(422);
 	}
 
-	public function testGenerateJWTToken()
+	public function testCanGenerateJWTTokenForValidUser()
 	{
-//		$this->expectException(\App\Exceptions\UserNotFoundException::class);
-
 		$abstractUser = Mockery::mock('Laravel\Socialite\Two\User');
 		$abstractUser->shouldReceive('getId')
 			->andReturn(1)
@@ -127,4 +127,8 @@ class AuthLoginTest extends TestCase
 		$this->assertTrue(app('redis')->sIsMember(env('REDIS_KEY'), $token));
 		$this->assertTrue(in_array($token, app('redis')->sMembers(env('REDIS_KEY'))));
 	}
+
+//	public function testCannotCreateJWTTokenForInvalidUser() {
+//		$this->expectException(\App\Exceptions\UserNotFoundException::class);
+//	}
 }
