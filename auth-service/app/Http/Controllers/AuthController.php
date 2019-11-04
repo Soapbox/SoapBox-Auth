@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
-use Laravel\Socialite\Facades\Socialite;
-use Laravel\Socialite\Two\User as SocialProviderUser;
+use Illuminate\Http\Response;
+use App\Services\TokenGeneratorService;
 
 class AuthController extends Controller
 {
 	protected $supported_providers = ['google', 'slack', 'microsoft'];
 
+	/**
+	 * @param Request $request
+	 * @return \Illuminate\Http\Response
+	 * @throws \Illuminate\Validation\ValidationException
+	 */
     public function login(Request $request)
 	{
 		$this->validate($request, [
@@ -23,67 +27,21 @@ class AuthController extends Controller
 				[
 					"token" => null,
 					"message" => 'Provider not supported at this time.'
-				], 404
+				], Response::HTTP_UNPROCESSABLE_ENTITY
 			);
 		}
 
-		$response = $this->generateJWTToken($request);
+		$tgs = TokenGeneratorService::generateToken($request);
 
-		if ($response["status"] === 200) {
-			app('redis')->sAdd(env('REDIS_KEY'), $response["jwt"]);
+		if ($tgs::getCode() === Response::HTTP_OK) {
+			app('redis')->sAdd(env('REDIS_KEY'), $tgs::getToken());
 		}
 
 		return response(
 			[
-				"token" => $response["jwt"],
-				"message" => $response["message"]
-			], $response["status"]
+				"token" => $tgs::getToken(),
+				"message" => $tgs::getMessage()
+			], $tgs::getCode()
 		);
 	}
-
-	protected function generateJWTToken(Request $request) : array
-	{
-		$response = [];
-
-		try {
-			$socialProviderUser = Socialite::driver($request->provider)->userFromToken($request->oauth_code);
-
-			if ($this->userExist($socialProviderUser)) {
-				$key = env('JWT_KEY');
-				$exp = strtotime('+1 '. env('JWT_EXP'));
-
-				$token = array(
-					"iss" => "http://auth-server.test",
-					"aud" => "http://api-gateway.test",
-					"iat" => time(),
-					"exp" => $exp,
-					"name" => $socialProviderUser->getName(),
-					"email" => $socialProviderUser->getEmail()
-				);
-
-				$response["jwt"] = JWT::encode($token, $key);
-				$response["status"] = 200;
-				$response["message"] = "Success";
-			} else {
-				$response["jwt"] = null;
-				$response["status"] = 404;
-				$response["message"] = "User not found.";
-			}
-		} catch (\Exception $e) {
-			$response["jwt"] = null;
-			$response["status"] = $e->getCode();
-			$response["message"] =  $e->getMessage();
-		}
-
-		return $response;
-	}
-
-	protected function userExist(SocialProviderUser $user) : bool
-	{
-    	//TODO: confirm that $user->getEmail() record actually exist in the users table
-
-    	return true;
-    }
-
-	public function logout(){}
 }
