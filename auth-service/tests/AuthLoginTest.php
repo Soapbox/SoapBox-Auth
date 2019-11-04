@@ -6,12 +6,8 @@ use Laravel\Socialite\Facades\Socialite;
 class AuthLoginTest extends TestCase
 {
 	protected $test_driver = 'google';
+	protected $test_oauth_code = "ya29.Il-pBx5aS_JhAMwcBo5Ip_cWZ9W19TEYzRKlcLLqZkN4PaFEnrl24y8tXldBR-pPtWxKnwHKa8cpSsuxJXyW2OngfTwVS5G6HKe-KI3pXlP_3C0UdR1XRhYv1ebVwK-fgA";
 
-	/**
-	 * A basic test example.
-	 *
-	 * @return void
-	 */
 	public function testValidations()
 	{
 		$this->json(
@@ -34,7 +30,7 @@ class AuthLoginTest extends TestCase
 	public function testOnlySupportedProvidersAreAllowed() {
 		$this->json(
 			'POST', '/login', [
-				'oauth_code' => env('TEST_GOOGLE_OAUTH_CODE'),
+				'oauth_code' => $this->test_oauth_code,
 				'provider' => 'unsupported',
 			]
 		)->seeJson(
@@ -42,11 +38,13 @@ class AuthLoginTest extends TestCase
 				'token' => null,
 				'message' => 'Provider not supported at this time.'
 			]
-		)->assertResponseStatus(404);
+		)->assertResponseStatus(422);
 	}
 
 	public function testGenerateJWTToken()
 	{
+//		$this->expectException(\App\Exceptions\UserNotFoundException::class);
+
 		$abstractUser = Mockery::mock('Laravel\Socialite\Two\User');
 		$abstractUser->shouldReceive('getId')
 			->andReturn(1)
@@ -61,7 +59,7 @@ class AuthLoginTest extends TestCase
 		Socialite::shouldReceive('driver')->with($this->test_driver)->andReturn($provider);
 
 		$res = $this->json('POST', '/login', [
-			'oauth_code' => env('TEST_GOOGLE_OAUTH_CODE'),
+			'oauth_code' => $this->test_oauth_code,
 			'provider' => $this->test_driver,
 		]);
 
@@ -88,7 +86,7 @@ class AuthLoginTest extends TestCase
 		Socialite::shouldReceive('driver')->with($this->test_driver)->andReturn($provider);
 
 		$this->json('POST', '/login', [
-			'oauth_code' => env('TEST_GOOGLE_OAUTH_CODE'),
+			'oauth_code' => $this->test_oauth_code,
 			'provider' => $this->test_driver,
 		])->seeJsonStructure(
 			[
@@ -118,7 +116,7 @@ class AuthLoginTest extends TestCase
 		Socialite::shouldReceive('driver')->with($this->test_driver)->andReturn($provider);
 
 		$res = $this->json('POST', '/login', [
-			'oauth_code' => env('TEST_GOOGLE_OAUTH_CODE'),
+			'oauth_code' => $this->test_oauth_code,
 			'provider' => $this->test_driver,
 		]);
 
