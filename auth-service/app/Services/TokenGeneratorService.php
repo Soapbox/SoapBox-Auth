@@ -40,14 +40,14 @@ class TokenGeneratorService
 			if ($userExist) {
 				$this->payload = $this->generatePayload($socialProviderUser);
 				$this->token = $this->jwt_library->encode($this->payload);
-
-				return $this->token;
 			} else {
 				throw new UserNotFoundException('User not found.: ' . $socialProviderUser->getEmail(), Response::HTTP_NOT_FOUND);
 			}
 		} else {
 			throw new \InvalidArgumentException('Provider and code must be set', Response::HTTP_BAD_REQUEST);
 		}
+
+		return $this->token;
 	}
 
 	/**
