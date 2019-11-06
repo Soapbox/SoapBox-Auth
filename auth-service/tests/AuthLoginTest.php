@@ -95,7 +95,7 @@ class AuthLoginTest extends TestCase
 			]
 		)->seeJson(
 			[
-				'message' => 'Success'
+				'message' => 'Success.'
 			]
 		)->assertResponseStatus(200);
 	}
@@ -127,8 +127,4 @@ class AuthLoginTest extends TestCase
 		$this->assertTrue(app('redis')->sIsMember(env('REDIS_KEY'), $token));
 		$this->assertTrue(in_array($token, app('redis')->sMembers(env('REDIS_KEY'))));
 	}
-
-//	public function testCannotCreateJWTTokenForInvalidUser() {
-//		$this->expectException(\App\Exceptions\UserNotFoundException::class);
-//	}
 }

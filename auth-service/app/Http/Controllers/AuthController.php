@@ -4,10 +4,17 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use App\Services\TokenGeneratorService;
 
 class AuthController extends Controller
 {
+	protected $token_service;
+
+	public function __construct()
+	{
+		$this->token_service = new TokenGeneratorService();
+	}
 
 	/**
 	 * @param Request $request
@@ -21,17 +28,34 @@ class AuthController extends Controller
 			'provider' 		=> 'required|in:'. 'google, slack, microsoft'
 		]);
 
-		$tgs = TokenGeneratorService::generateToken($request);
+		$this->token_service->setProvider($request->provider);
+		$this->token_service->setCode($request->oauth_code);
 
-		if ($tgs::getCode() === Response::HTTP_OK) {
-			app('redis')->sAdd(env('REDIS_KEY'), $tgs::getToken());
+		try {
+			$token = $this->token_service->generateToken();
+
+			if ($token) {
+				app('redis')->sAdd(env('REDIS_KEY'), $token);
+			}
+
+			return response(
+				[
+					"token" => $token,
+					"message" => "Success."
+				], Response::HTTP_OK
+			);
+
+		} catch (\Exception $e) {
+			Log::info('There was an error.', [
+				'error' => $e->getMessage()
+			]);
+
+			return response(
+				[
+					"token" => null,
+					"message" => $e->getMessage()
+				], $e->getCode()
+			);
 		}
-
-		return response(
-			[
-				"token" => $tgs::getToken(),
-				"message" => $tgs::getMessage()
-			], $tgs::getCode()
-		);
 	}
 }
