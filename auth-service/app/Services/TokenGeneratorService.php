@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use Firebase\JWT\JWT;
+use Illuminate\Http\Response;
 use Laravel\Socialite\Facades\Socialite;
 use App\Exceptions\UserNotFoundException;
 
@@ -31,18 +32,22 @@ class TokenGeneratorService
 	 */
 	public function generateToken()
 	{
-		$socialProviderUser = Socialite::driver($this->provider)->userFromToken($this->code);
+		if ($this->provider && $this->code && in_array($this->provider, ['google', 'slack', 'microsoft'])) {
+			$socialProviderUser = Socialite::driver($this->provider)->userFromToken($this->code);
 
-		$userExist = true;
+			$userExist = true; //assumption
 
-		if ($userExist) {
-			$this->user = $socialProviderUser;
-			$this->generatePayload();
-			$this->token = JWT::encode($this->payload, $this->key);
+			if ($userExist) {
+				$this->user = $socialProviderUser;
+				$this->generatePayload();
+				$this->token = JWT::encode($this->payload, $this->key);
 
-			return $this->token;
+				return $this->token;
+			} else {
+				throw new UserNotFoundException('User not found.: ' . $socialProviderUser->getEmail(), Response::HTTP_NOT_FOUND);
+			}
 		} else {
-			throw new UserNotFoundException('User not found.: ' . $socialProviderUser->getEmail());
+			throw new \InvalidArgumentException('Provider and code must be set', Response::HTTP_BAD_REQUEST);
 		}
 	}
 
@@ -63,15 +68,11 @@ class TokenGeneratorService
 
 	public function setProvider($provider)
 	{
-		if ($provider) {
-			$this->provider = $provider;
-		}
+		$this->provider = $provider;
 	}
 
 	public function setCode($code)
 	{
-		if ($code) {
-			$this->code = $code;
-		}
+		$this->code = $code;
 	}
 }
