@@ -26,7 +26,7 @@ class AuthController extends Controller
 	{
 		$this->validate($request, [
 			'oauth_code' 	=> 'required|string',
-			'provider' 		=> 'required|in:'. implode(',', config('keys.supported_providers'))
+			'provider' 		=> 'required|in:'. implode(',', config('support.providers'))
 		]);
 
 		$this->token_service->setProvider($request->provider);

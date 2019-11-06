@@ -97,6 +97,7 @@ $app->register(\SocialiteProviders\Manager\ServiceProvider::class);
 */
 $app->configure('services');
 $app->configure('keys');
+$app->configure('support');
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
