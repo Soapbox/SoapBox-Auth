@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use Firebase\JWT\JWT;
+use App\Libraries\iJWTLibrary;
 use Illuminate\Http\Response;
 use Laravel\Socialite\Facades\Socialite;
 use App\Exceptions\UserNotFoundException;
@@ -16,14 +16,14 @@ class TokenGeneratorService
 	protected $token;
 	protected $payload;
 	protected $provider; //ex google, slack, microsoft
+	protected $jwt_library;
 
 	const ISS = "http://auth-server.test";
 	const AUD = "http://api-gateway.test";
 
-	public function __construct()
+	public function __construct(iJWTLibrary $jwtLibrary)
 	{
-		$this->key = env('JWT_KEY');
-		$this->exp = env('JWT_EXP');
+		$this->jwt_library = $jwtLibrary;
 	}
 
 	/**
@@ -38,8 +38,8 @@ class TokenGeneratorService
 			$userExist = true; //assumption
 
 			if ($userExist) {
-				$this->generatePayload($socialProviderUser);
-				$this->token = JWT::encode($this->payload, $this->key);
+				$this->payload = $this->generatePayload($socialProviderUser);
+				$this->token = $this->jwt_library->encode($this->payload);
 
 				return $this->token;
 			} else {
@@ -53,10 +53,11 @@ class TokenGeneratorService
 	/**
 	 * Generate payload
 	 * @param SocialProviderUser $user
+	 * @return array
 	 */
-	protected function generatePayload(SocialProviderUser $user): void
+	protected function generatePayload(SocialProviderUser $user): array
 	{
-		$this->payload = array(
+		return array(
 			"iss" => self::ISS,
 			"aud" => self::AUD,
 			"iat" => time(),

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Libraries\iJWTLibrary;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
@@ -11,9 +12,9 @@ class AuthController extends Controller
 {
 	protected $token_service;
 
-	public function __construct()
+	public function __construct(iJWTLibrary $library)
 	{
-		$this->token_service = new TokenGeneratorService();
+		$this->token_service = new TokenGeneratorService($library);
 	}
 
 	/**
