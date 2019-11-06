@@ -6,12 +6,12 @@ use Firebase\JWT\JWT;
 use Illuminate\Http\Response;
 use Laravel\Socialite\Facades\Socialite;
 use App\Exceptions\UserNotFoundException;
+use Laravel\Socialite\Two\User as SocialProviderUser;
 
 class TokenGeneratorService
 {
 	protected $key;
 	protected $exp;
-	protected $user;
 	protected $code; //refers to oauth_code from provider
 	protected $token;
 	protected $payload;
@@ -38,8 +38,7 @@ class TokenGeneratorService
 			$userExist = true; //assumption
 
 			if ($userExist) {
-				$this->user = $socialProviderUser;
-				$this->generatePayload();
+				$this->generatePayload($socialProviderUser);
 				$this->token = JWT::encode($this->payload, $this->key);
 
 				return $this->token;
@@ -53,16 +52,17 @@ class TokenGeneratorService
 
 	/**
 	 * Generate payload
+	 * @param SocialProviderUser $user
 	 */
-	protected function generatePayload(): void
+	protected function generatePayload(SocialProviderUser $user): void
 	{
 		$this->payload = array(
 			"iss" => self::ISS,
 			"aud" => self::AUD,
 			"iat" => time(),
 			"exp" => strtotime('+1 '. $this->exp),
-			"name" => $this->user->getName(),
-			"email" => $this->user->getEmail()
+			"name" => $user->getName(),
+			"email" => $user->getEmail()
 		);
 	}
 
