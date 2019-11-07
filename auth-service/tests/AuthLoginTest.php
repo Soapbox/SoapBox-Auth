@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Redis;
 use Laravel\Socialite\Facades\Socialite;
 
 class AuthLoginTest extends TestCase
@@ -117,6 +118,10 @@ class AuthLoginTest extends TestCase
 
 		Socialite::shouldReceive('driver')->with($this->test_driver)->andReturn($provider);
 
+		$tgsMock = Mockery::mock('\App\Services\TokenGeneratorService');
+		$test_iat = time();
+		$tgsMock->shouldReceive('getIat')->andReturn($test_iat);
+
 		$res = $this->json('POST', '/login', [
 			'oauth_code' => $this->test_oauth_code,
 			'provider' => $this->test_driver,
@@ -126,7 +131,6 @@ class AuthLoginTest extends TestCase
 		$token = $obj->{'token'};
 
 		//assert the token is infact in Redis
-		$this->assertTrue(app('redis')->sIsMember(env('REDIS_KEY'), $token));
-		$this->assertTrue(in_array($token, app('redis')->sMembers(env('REDIS_KEY'))));
+		$this->assertSame($token, Redis::get($test_iat));
 	}
 }
