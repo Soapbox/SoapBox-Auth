@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Libraries\iJWTLibrary;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Libraries\iJWTLibrary;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 use App\Services\TokenGeneratorService;
 
 class AuthController extends Controller
@@ -36,7 +37,7 @@ class AuthController extends Controller
 			$token = $this->token_service->generateToken();
 
 			if ($token) {
-				app('redis')->sAdd(env('REDIS_KEY'), $token);
+				Redis::set($this->token_service->getIat(), $token);
 			}
 
 			return response(
