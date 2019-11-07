@@ -1,17 +1,26 @@
 <?php
 
-use App\Http\Controllers\RouteController;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Client;
+use Firebase\JWT\JWT;
 
 class RouteTest extends TestCase
 {
-    protected $jwt;
+    private $jwt;
     public function setUp(): void
     {
         parent::setUp();
-        $this->jwt =
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hdXRoLXNlcnZlci50ZXN0IiwiYXVkIjoiaHR0cDpcL1wvYXBpLWdhdGV3YXkudGVzdCIsImlhdCI6MTU3MjM0NDUxMywiZXhwIjoxNTcyOTQ5MzEzLCJuYW1lIjoiQ2FsZWIgTWJha3dlIiwiZW1haWwiOiJjYWxlYkBzb2FwYm94aHEuY29tIiwiYXZhdGFyIjoiaHR0cHM6XC9cL2xoNS5nb29nbGV1c2VyY29udGVudC5jb21cLy13Z3dXWF9LNkZWQVwvQUFBQUFBQUFBQUlcL0FBQUFBQUFBQUFBXC9BQ0hpM3JlYWM2cVRuX0pTak9RQU9WelBRXzZOV3VTWmRnXC9waG90by5qcGcifQ.fUsixNLW87PbTecfTt46TjEVgv1gT4byCkHbfizuFZ8";
+        $key = env('JWT_KEY');
+        $exp = strtotime('+1 week');
+
+        $token = array(
+            "iss" => "http://auth-server.test",
+            "aud" => "http://api-gateway.test",
+            "iat" => time(),
+            "exp" => $exp
+        );
+
+        $this->jwt = JWT::encode($token, $key, 'HS256');
         app('redis')->sAdd(env('REDIS_KEY'), $this->jwt);
     }
 

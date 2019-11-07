@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use App\Services\RoutesMapService;
-use Illuminate\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
 
 class RouteController extends Controller
 {
@@ -51,9 +51,9 @@ class RouteController extends Controller
      * Controller method for all get requests
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function get(Request $request)
+    public function get(Request $request): Response
     {
         if (!isset($this->url)) {
             return response(null, $this->code);
@@ -65,9 +65,10 @@ class RouteController extends Controller
     /**
      * Controller method for all post requests
      *
-     * @return Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function post(Request $request)
+    public function post(Request $request): Response
     {
         if (!isset($this->url)) {
             return response(null, $this->code);
@@ -79,9 +80,10 @@ class RouteController extends Controller
     /**
      * Controller method for all put requests
      *
-     * @return Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function put(Request $request)
+    public function put(Request $request): Response
     {
         if (!isset($this->url)) {
             return response(null, $this->code);
@@ -93,9 +95,10 @@ class RouteController extends Controller
     /**
      * Controller method for all delete requests
      *
-     * @return Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function delete(Request $request)
+    public function delete(Request $request): Response
     {
         if (!isset($this->url)) {
             return response(null, $this->code);

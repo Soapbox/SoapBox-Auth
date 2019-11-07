@@ -47,20 +47,27 @@ class RoutesMapService
      * Helper method to resolve final route from a given request
      *
      * @param \Illuminate\Http\Request  $request
-     * @return Object
+     * @return \stdClass
      */
-    public function getRoute(Request $request)
+    public function getRoute(Request $request): \stdClass
     {
         $key = array_search(
             $request->input('service'),
             array_column($this->routes, 'service')
         );
-        $route = $this->routes[$key];
 
         $url = null;
         $code = null;
+        $route = null;
+
+        if ($key === false) {
+            $code = Response::HTTP_NOT_FOUND;
+        } else {
+            $route = $this->routes[$key];
+        }
 
         if (
+            isset($route) &&
             isset(
                 $route["endpoints"][$request->method()][$request->input("path")]
             )
@@ -73,8 +80,10 @@ class RoutesMapService
             // check if auth is required (auth would have already been done in middleware)
             if ($rule["auth"]) {
                 if (!$request->headers->has('Authorization')) {
-                    $code = 401;
-                    return (object) ["url" => $url, "code" => $code];
+                    return (object) [
+                        "url" => $url,
+                        "code" => Response::HTTP_UNAUTHORIZED
+                    ];
                 }
             } else {
                 // remove jwt payload from request if the underlying request doesn't require authentication
@@ -93,7 +102,7 @@ class RoutesMapService
                 '/' .
                 $rule["url"];
         } else {
-            $code = 404;
+            $code = Response::HTTP_NOT_FOUND;
         }
 
         return (object) ["url" => $url, "code" => $code];
@@ -105,10 +114,13 @@ class RoutesMapService
      * @param \Illuminate\Http\Request  $request
      * @param string $option
      * @param string $url
-     * @return Illuminate\Http\Response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function handler(Request $request, $option, $url)
-    {
+    public function handler(
+        Request $request,
+        $option,
+        $url
+    ): \Symfony\Component\HttpFoundation\Response {
         $options = [];
 
         if ($request->headers->has('Authorization')) {

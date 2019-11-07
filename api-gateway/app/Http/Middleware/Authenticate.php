@@ -35,14 +35,14 @@ class Authenticate
         }
 
         // add details to request for controller to work it's magic
-        try {
-            $path = explode("/", $request->path());
+        $path = explode("/", $request->path());
 
+        if (isset($path[0]) && isset($path[1])) {
             $request->merge([
                 "service" => $path[0],
                 "path" => $path[1]
             ]);
-        } catch (\ErrorException $ex) {
+        } else {
             // happens when the url sent is not in the form 'service/endpoint{anything can follow}'
             return response(null, Response::HTTP_NOT_FOUND);
         }
