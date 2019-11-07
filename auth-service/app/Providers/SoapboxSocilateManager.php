@@ -1,15 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: florenceokosun
- * Date: 2019-11-07
- * Time: 20:30
- */
 
 namespace App\Providers;
 
+use Laravel\Socialite\SocialiteManager;
 
-class SoapboxSocilateManager
+class SoapboxSocilateManager extends SocialiteManager
 {
+	protected function createSlackDriver()
+	{
+		$config = $this->app['config']['services.slack'];
 
+		return $this->buildProvider(
+			SlackProvider::class, $config
+		);
+	}
 }

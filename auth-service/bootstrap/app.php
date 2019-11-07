@@ -81,7 +81,7 @@ $app->register(App\Providers\AppServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Illuminate\Redis\RedisServiceProvider::class);
 //$app->register(Laravel\Socialite\SocialiteServiceProvider::class);
-$app->register(\SocialiteProviders\Manager\ServiceProvider::class);
+$app->register(App\Providers\SoapboxSocialiteProviders::class);
 
 
 /*
