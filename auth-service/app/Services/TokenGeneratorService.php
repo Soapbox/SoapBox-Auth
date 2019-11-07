@@ -76,4 +76,12 @@ class TokenGeneratorService
 	{
 		$this->code = $code;
 	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getIat()
+	{
+		return $this->payload["iat"];
+	}
 }
