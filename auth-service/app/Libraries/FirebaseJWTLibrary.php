@@ -19,4 +19,14 @@ class FirebaseJWTLibrary implements iJWTLibrary
 	{
 		return JWT::encode($payload, $this->key);
 	}
+
+	public function getExpiry()
+	{
+		return $this->exp;
+	}
+
+	public function getKey()
+	{
+		return $this->key;
+	}
 }

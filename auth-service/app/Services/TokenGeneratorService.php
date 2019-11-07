@@ -44,7 +44,7 @@ class TokenGeneratorService
 				throw new UserNotFoundException('User not found.: ' . $socialProviderUser->getEmail(), Response::HTTP_NOT_FOUND);
 			}
 		} else {
-			throw new \InvalidArgumentException('Provider and code must be set', Response::HTTP_BAD_REQUEST);
+			throw new \InvalidArgumentException('Provider and code must be set', Response::HTTP_FORBIDDEN);
 		}
 
 		return $this->token;
@@ -61,7 +61,7 @@ class TokenGeneratorService
 			"iss" => self::ISS,
 			"aud" => self::AUD,
 			"iat" => time(),
-			"exp" => strtotime('+1 '. $this->exp),
+			"exp" => strtotime('+1 '. $this->jwt_library->getExpiry()),
 			"name" => $user->getName(),
 			"email" => $user->getEmail()
 		);

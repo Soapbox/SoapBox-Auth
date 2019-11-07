@@ -27,12 +27,14 @@ class AuthLoginTest extends TestCase
 		)->assertResponseStatus(422);
 	}
 
-	public function testOnlySupportedProvidersAreAllowed() {
+	public function testOnlySupportedProvidersAreAllowed()
+	{
+		$example = ['gogle', 'slck', 'micrsoft', 'unsupported']; //typos or more generic
 
 		$this->json(
 			'POST', '/login', [
 				'oauth_code' => $this->test_oauth_code,
-				'provider' => 'unsupported',
+				'provider' => $example[array_rand($example, 1)],
 			]
 		)->seeJson(
 			[
