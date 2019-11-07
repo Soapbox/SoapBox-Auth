@@ -8,11 +8,13 @@ class FirebaseJWTLibrary implements iJWTLibrary
 {
 	protected $key;
 	protected $exp;
+	protected $algo;
 
 	public function __construct()
 	{
 		$this->key = config('keys.firebase_jwt.key');
 		$this->exp = config('keys.firebase_jwt.exp');
+		$this->algo = config('keys.firebase_jwt.algo');
 	}
 
 	public function encode($payload)
@@ -28,5 +30,10 @@ class FirebaseJWTLibrary implements iJWTLibrary
 	public function getKey()
 	{
 		return $this->key;
+	}
+
+	public function decode($token)
+	{
+		return JWT::decode($token, $this->key, [$this->algo]);
 	}
 }

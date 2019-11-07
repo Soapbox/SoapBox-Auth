@@ -1,6 +1,5 @@
 <?php
 
-use Firebase\JWT\JWT;
 use App\Libraries\FirebaseJWTLibrary;
 use Laravel\Socialite\Facades\Socialite;
 
@@ -57,7 +56,8 @@ class TokenGeneratorTest extends TestCase
 		$token = $token_service->generateToken();
 		$this->assertNotEmpty($token);
 
-		$decoded_payload = JWT::decode($token, $this->config['key'], [$this->config['algo']]);
+		$jwt_library = new \App\Libraries\FirebaseJWTLibrary();
+		$decoded_payload = $jwt_library->decode($token);
 		$this->assertSame($abstractUser->getName(), $decoded_payload->name);
 		$this->assertSame($abstractUser->getEmail(), $decoded_payload->email);
 	}

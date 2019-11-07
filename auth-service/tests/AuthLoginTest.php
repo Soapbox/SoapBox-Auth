@@ -1,6 +1,5 @@
 <?php
 
-use Firebase\JWT\JWT;
 use Laravel\Socialite\Facades\Socialite;
 
 class AuthLoginTest extends TestCase
@@ -67,7 +66,8 @@ class AuthLoginTest extends TestCase
 
 		$obj = json_decode($res->response->getContent());
 		$token = $obj->{'token'};
-		$decoded_payload = JWT::decode($token, env('JWT_KEY'), [env('JWT_ALGO')]);
+		$jwt_library = new \App\Libraries\FirebaseJWTLibrary();
+		$decoded_payload = $jwt_library->decode($token);
 		$this->assertSame($abstractUser->getName(), $decoded_payload->name);
 		$this->assertSame($abstractUser->getEmail(), $decoded_payload->email);
 	}
