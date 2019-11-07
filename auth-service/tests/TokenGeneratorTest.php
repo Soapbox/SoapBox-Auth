@@ -19,7 +19,7 @@ class TokenGeneratorTest extends TestCase
 		];
 	}
 
-	public function testCannotGenerateTokenIfProviderIsNotSet()
+	public function testCannotGenerateTokenIfCodeOrProviderNotSet()
 	{
 		$this->expectException(\InvalidArgumentException::class);
 		$token_service = new \App\Services\TokenGeneratorService(new FirebaseJWTLibrary());
@@ -29,15 +29,9 @@ class TokenGeneratorTest extends TestCase
 	public function testCannotGenerateTokenIfProviderIsNotSupported()
 	{
 		$this->expectException(\InvalidArgumentException::class);
+		$example = ['gogle', 'slck', 'micrsoft', 'unsupported']; //sample unsupported providers
 		$token_service = new \App\Services\TokenGeneratorService(new FirebaseJWTLibrary());
-		$token_service->setProvider('unsupported');
-		$token_service->generateToken();
-	}
-
-	public function testCannotGenerateTokenIfCodeIsNotSet()
-	{
-		$this->expectException(\InvalidArgumentException::class);
-		$token_service = new \App\Services\TokenGeneratorService(new FirebaseJWTLibrary());
+		$token_service->setProvider($example[array_rand($example, 1)]);
 		$token_service->generateToken();
 	}
 
