@@ -23,7 +23,7 @@ class SoapboxSocialiteProviders extends ServiceProvider
 	public function register()
 	{
 		$this->app->singleton(Factory::class, function ($app) {
-			return new SoapboxSocilateManager($app);
+			return new SoapboxSocialiteManager($app);
 		});
 	}
 

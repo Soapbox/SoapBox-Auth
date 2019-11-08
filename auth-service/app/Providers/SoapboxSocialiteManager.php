@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use Laravel\Socialite\SocialiteManager;
 
-class SoapboxSocilateManager extends SocialiteManager
+class SoapboxSocialiteManager extends SocialiteManager
 {
 	protected function createSlackDriver()
 	{

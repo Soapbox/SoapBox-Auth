@@ -2,14 +2,14 @@
 
 namespace App\Providers;
 
+use GuzzleHttp\Client;
 use Illuminate\Support\Arr;
+use GuzzleHttp\HandlerStack;
 use Laravel\Socialite\Two\User;
+use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Exception\RequestException;
 use Laravel\Socialite\Two\AbstractProvider;
 use Laravel\Socialite\Two\ProviderInterface;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\HandlerStack;
-use Psr\Http\Message\ResponseInterface;
 
 class SlackProvider extends AbstractProvider implements ProviderInterface
 {
