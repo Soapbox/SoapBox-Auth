@@ -5,8 +5,13 @@ use Laravel\Socialite\Facades\Socialite;
 
 class AuthLoginTest extends TestCase
 {
-	protected $test_driver = 'google';
+	protected $test_driver = ['google', 'slack'];
 	protected $test_oauth_code = "ya29.Il-pBx5aS_JhAMwcBo5Ip_cWZ9W19TEYzRKlcLLqZkN4PaFEnrl24y8tXldBR-pPtWxKnwHKa8cpSsuxJXyW2OngfTwVS5G6HKe-KI3pXlP_3C0UdR1XRhYv1ebVwK-fgA";
+
+	public function randomProvider()
+	{
+		return $this->test_driver[array_rand($this->test_driver, 1)];
+	}
 
 	public function testValidations()
 	{
@@ -47,6 +52,8 @@ class AuthLoginTest extends TestCase
 
 	public function testCanGenerateJWTTokenForValidUser()
 	{
+		$driver = $this->randomProvider();
+
 		$abstractUser = Mockery::mock('Laravel\Socialite\Two\User');
 		$abstractUser->shouldReceive('getId')
 			->andReturn(1)
@@ -58,11 +65,11 @@ class AuthLoginTest extends TestCase
 		$provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
 		$provider->shouldReceive('userFromToken')->andReturn($abstractUser);
 
-		Socialite::shouldReceive('driver')->with($this->test_driver)->andReturn($provider);
+		Socialite::shouldReceive('driver')->with($driver)->andReturn($provider);
 
 		$res = $this->json('POST', '/login', [
 			'oauth_code' => $this->test_oauth_code,
-			'provider' => $this->test_driver,
+			'provider' => $driver,
 		]);
 
 		$obj = json_decode($res->response->getContent());
@@ -75,6 +82,8 @@ class AuthLoginTest extends TestCase
 
 	public function testAssertStatusCodeIs200()
 	{
+		$driver = $this->randomProvider();
+
 		$abstractUser = Mockery::mock('Laravel\Socialite\Two\User');
 		$abstractUser->shouldReceive('getId')
 			->andReturn(1)
@@ -86,11 +95,11 @@ class AuthLoginTest extends TestCase
 		$provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
 		$provider->shouldReceive('userFromToken')->andReturn($abstractUser);
 
-		Socialite::shouldReceive('driver')->with($this->test_driver)->andReturn($provider);
+		Socialite::shouldReceive('driver')->with($driver)->andReturn($provider);
 
 		$this->json('POST', '/login', [
 			'oauth_code' => $this->test_oauth_code,
-			'provider' => $this->test_driver,
+			'provider' => $driver,
 		])->seeJsonStructure(
 			[
 				'token',
@@ -105,6 +114,8 @@ class AuthLoginTest extends TestCase
 
 	public function testSeeJWTInRedisAfterSuccessfulLogin()
 	{
+		$driver = $this->randomProvider();
+
 		$abstractUser = Mockery::mock('Laravel\Socialite\Two\User');
 		$abstractUser->shouldReceive('getId')
 			->andReturn(1)
@@ -116,7 +127,7 @@ class AuthLoginTest extends TestCase
 		$provider = Mockery::mock('Laravel\Socialite\Contracts\Provider');
 		$provider->shouldReceive('userFromToken')->andReturn($abstractUser);
 
-		Socialite::shouldReceive('driver')->with($this->test_driver)->andReturn($provider);
+		Socialite::shouldReceive('driver')->with($driver)->andReturn($provider);
 
 		$tgsMock = Mockery::mock('\App\Services\TokenGeneratorService');
 		$test_iat = time();
@@ -124,7 +135,7 @@ class AuthLoginTest extends TestCase
 
 		$res = $this->json('POST', '/login', [
 			'oauth_code' => $this->test_oauth_code,
-			'provider' => $this->test_driver,
+			'provider' => $driver,
 		]);
 
 		$obj = json_decode($res->response->getContent());
