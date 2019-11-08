@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 
 class Authenticate
 {
@@ -22,7 +23,7 @@ class Authenticate
             // validate jwt
             $jwt = explode(" ", $request->header('Authorization'))[1];
 
-            if (!app('redis')->sIsMember(env('REDIS_KEY'), $jwt)) {
+            if (!Cache::has($jwt)) {
                 return response('Unauthorized.', Response::HTTP_UNAUTHORIZED);
             } else {
                 // decode JWT and add to request

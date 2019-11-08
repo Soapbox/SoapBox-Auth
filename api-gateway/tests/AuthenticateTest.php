@@ -4,6 +4,7 @@ use App\Http\Middleware\Authenticate;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Firebase\JWT\JWT;
+use Illuminate\Support\Facades\Cache;
 
 class AuthenticateTest extends TestCase
 {
@@ -23,11 +24,7 @@ class AuthenticateTest extends TestCase
 
         $this->jwt = JWT::encode($token, $key, 'HS256');
 
-        $redis = Mockery::mock('Illuminate\Redis\RedisServiceProvider');
-        $redis->shouldReceive('sAdd')->andReturn(true);
-        $redis->shouldReceive('sIsMember')->andReturn(true);
-
-        app('redis')->sAdd(env('REDIS_KEY'), $this->jwt);
+        Cache::add($this->jwt, '', 10);
     }
 
     /** @test */
@@ -101,7 +98,7 @@ class AuthenticateTest extends TestCase
 
     public function tearDown(): void
     {
-        app('redis')->sRem(env('REDIS_KEY'), $this->jwt);
+        Cache::forget($this->jwt);
         parent::tearDown();
     }
 }

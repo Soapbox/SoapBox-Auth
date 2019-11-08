@@ -3,6 +3,7 @@
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Client;
 use Firebase\JWT\JWT;
+use Illuminate\Support\Facades\Cache;
 
 class RouteTest extends TestCase
 {
@@ -21,7 +22,7 @@ class RouteTest extends TestCase
         );
 
         $this->jwt = JWT::encode($token, $key, 'HS256');
-        app('redis')->sAdd(env('REDIS_KEY'), $this->jwt);
+        Cache::add($this->jwt, '', 10);
     }
 
     public function prepareValidResponse()
@@ -103,7 +104,7 @@ class RouteTest extends TestCase
 
     public function tearDown(): void
     {
-        app('redis')->sRem(env('REDIS_KEY'), $this->jwt);
+        Cache::forget($this->jwt);
         parent::tearDown();
     }
 }
