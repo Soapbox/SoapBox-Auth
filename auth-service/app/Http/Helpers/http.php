@@ -1,5 +1,6 @@
 <?php
-;
+
+const UNKNOWN_ERROR = 520;
 
 function http_code_by_exception_type(\Exception $e)
 {
@@ -20,5 +21,5 @@ function http_code_by_exception_type(\Exception $e)
 		return Illuminate\Http\Response::HTTP_BAD_REQUEST;
 	}
 
-	return 0;
+	return UNKNOWN_ERROR;
 }
