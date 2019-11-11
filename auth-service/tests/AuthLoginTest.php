@@ -5,7 +5,7 @@ use Laravel\Socialite\Facades\Socialite;
 
 class AuthLoginTest extends TestCase
 {
-	protected $test_driver = ['google', 'slack'];
+	protected $test_driver = ['google', 'slack', 'graph'];
 	protected $test_oauth_code = "ya29.Il-pBx5aS_JhAMwcBo5Ip_cWZ9W19TEYzRKlcLLqZkN4PaFEnrl24y8tXldBR-pPtWxKnwHKa8cpSsuxJXyW2OngfTwVS5G6HKe-KI3pXlP_3C0UdR1XRhYv1ebVwK-fgA";
 
 	public function randomProvider()
