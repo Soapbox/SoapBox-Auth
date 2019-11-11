@@ -11,6 +11,7 @@ serviceList=(
 
 for i in "${!serviceList[@]}"
 do
+    php ${serviceList[$i]}/artisan --env=example
     echo "################################################################################";
     echo "# composer install ${serviceList[$i]}"
     echo "################################################################################";

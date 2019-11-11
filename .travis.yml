@@ -8,10 +8,6 @@ php:
 env:
   - DB=mysql
 
-cache:
-  directories:
-    - $HOME/.composer/cache
-
 services:
   - mysql
   - redis-server
@@ -23,5 +19,4 @@ before_install:
   - ./install_deps
 
 script:
-  - php artisan --env=example
   - ./run_tests
