@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Cache;
 use Laravel\Socialite\Facades\Socialite;
 
 class AuthLoginTest extends TestCase
@@ -142,6 +142,6 @@ class AuthLoginTest extends TestCase
 		$token = $obj->{'token'};
 
 		//assert the token is infact in Redis
-		$this->assertSame($token, Redis::get($test_iat));
+		$this->assertTrue(Cache::has($token));
 	}
 }
