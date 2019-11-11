@@ -9,6 +9,12 @@ use Illuminate\Support\Facades\Cache;
 class AuthenticateTest extends TestCase
 {
     private $jwt;
+
+    /**
+     * Setup adds JWT to cache
+     *
+     * @return void
+     */
     public function setUp(): void
     {
         parent::setUp();
@@ -27,8 +33,14 @@ class AuthenticateTest extends TestCase
         Cache::add($this->jwt, '', 10);
     }
 
-    /** @test */
-    public function request_without_authorization()
+    /**
+     * This test checks that the authentication module allows requests
+     * without authorization pass through.
+     * Before doing so, it breaks the request down and adds them to the request parameters
+     *
+     * @return void
+     */
+    public function testRequestWithoutAuthorization(): void
     {
         $request = Request::create('/email/health-check', 'GET');
 
@@ -40,21 +52,12 @@ class AuthenticateTest extends TestCase
         });
     }
 
-    public function request_with_invalid_route()
-    {
-        $request = Request::create('/email/not-found', 'GET');
-
-        $middleware = new Authenticate();
-
-        $response = $middleware->handle($request, function () {});
-
-        $this->assertEquals(
-            Response::HTTP_NOT_FOUND,
-            $response->getStatusCode()
-        );
-    }
-
-    public function request_with_invalid_authorization()
+    /**
+     * This test checks that a request with an invalid JWT is not allowed through the API gateway
+     *
+     * @return void
+     */
+    public function testRequestWithInvalidAuthorization(): void
     {
         $request = Request::create('/email/send-body', 'GET');
 
@@ -78,7 +81,13 @@ class AuthenticateTest extends TestCase
         );
     }
 
-    public function request_with_valid_authorization()
+    /**
+     * this test checks that the authentication middleware allows requests with valid
+     * JWT through. It does so by adding the details of the service to the request params
+     *
+     * @return void
+     */
+    public function testRequestWithValidAuthorization(): void
     {
         $request = Request::create('/email/send-body', 'GET');
 
@@ -96,6 +105,11 @@ class AuthenticateTest extends TestCase
         });
     }
 
+    /**
+     * tearDown removes JWT from cache
+     *
+     * @return void
+     */
     public function tearDown(): void
     {
         Cache::forget($this->jwt);

@@ -1,6 +1,6 @@
 <?php
 
-use GuzzleHttp\Psr7\Response;
+use Illuminate\Http\Response;
 use GuzzleHttp\Client;
 use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Cache;
@@ -8,6 +8,12 @@ use Illuminate\Support\Facades\Cache;
 class RouteTest extends TestCase
 {
     private $jwt;
+
+    /**
+     * Setup adds JWT to cache
+     *
+     * @return void
+     */
     public function setUp(): void
     {
         parent::setUp();
@@ -25,9 +31,15 @@ class RouteTest extends TestCase
         Cache::add($this->jwt, '', 10);
     }
 
-    public function prepareValidResponse()
+    /**
+     * This function prepares a test to return a valid response to a guzzle request
+     *
+     * @param int $code
+     * @return void
+     */
+    public function prepareValidResponse($code): void
     {
-        $response = new Response(200);
+        $response = new \GuzzleHttp\Psr7\Response($code);
         $client = Mockery::mock(Client::class);
         $client
             ->shouldReceive('request')
@@ -36,27 +48,48 @@ class RouteTest extends TestCase
         $this->app->instance(Client::class, $client);
     }
 
-    public function testValidGet()
+    /**
+     * This test checks that a valid get operation returns 200 as expected
+     *
+     * @return void
+     */
+    public function testValidGet(): void
     {
-        $this->prepareValidResponse();
+        $this->prepareValidResponse(Response::HTTP_OK);
 
         $this->get('/email/health-check');
 
-        $this->assertEquals(200, $this->response->getStatusCode());
+        $this->assertEquals(
+            Response::HTTP_OK,
+            $this->response->getStatusCode()
+        );
 
         $this->app->instance(Client::class, null);
     }
 
-    public function testInvalidGet()
+    /**
+     * This test checks that a request to a non existent service returns 404
+     *
+     * @return void
+     */
+    public function testInvalidGet(): void
     {
         $this->get('/service/not-found');
 
-        $this->assertEquals(404, $this->response->getStatusCode());
+        $this->assertEquals(
+            Response::HTTP_NOT_FOUND,
+            $this->response->getStatusCode()
+        );
     }
 
-    public function testValidPost()
+    /**
+     * This test checks that a valid post operation returns 200 as expected
+     *
+     * @return void
+     */
+    public function testValidPost(): void
     {
-        $this->prepareValidResponse();
+        $this->prepareValidResponse(Response::HTTP_OK);
 
         $this->json(
             'POST',
@@ -64,21 +97,34 @@ class RouteTest extends TestCase
             ['subject' => 'Sally', 'body' => 'Ommlette du fromage'],
             ['Authorization' => 'Bearer ' . $this->jwt]
         );
-        $this->assertEquals(200, $this->response->status());
+        $this->assertEquals(Response::HTTP_OK, $this->response->status());
     }
 
-    public function testUnauthorizedPost()
+    /**
+     * This test checks that an unauthorized post operation returns 401
+     *
+     * @return void
+     */
+    public function testUnauthorizedPost(): void
     {
         $response = $this->json('POST', '/email/send-email', [
             'subject' => 'Sally',
             'body' => 'Ommlette du fromage'
         ]);
-        $this->assertEquals(401, $this->response->status());
+        $this->assertEquals(
+            Response::HTTP_UNAUTHORIZED,
+            $this->response->status()
+        );
     }
 
-    public function testValidPut()
+    /**
+     * This test checks that a valid put operation returns 200 as expected
+     *
+     * @return void
+     */
+    public function testValidPut(): void
     {
-        $this->prepareValidResponse();
+        $this->prepareValidResponse(Response::HTTP_OK);
 
         $response = $this->json(
             'PUT',
@@ -86,12 +132,17 @@ class RouteTest extends TestCase
             ['user_id' => 1, 'email' => 'ommlette.du@fromage.com'],
             ['Authorization' => 'Bearer ' . $this->jwt]
         );
-        $this->assertEquals(200, $this->response->status());
+        $this->assertEquals(Response::HTTP_OK, $this->response->status());
     }
 
-    public function testValidDelete()
+    /**
+     * This test checks that a valid delete operation returns 200 as expected
+     *
+     * @return void
+     */
+    public function testValidDelete(): void
     {
-        $this->prepareValidResponse();
+        $this->prepareValidResponse(Response::HTTP_OK);
 
         $response = $this->json(
             'DELETE',
@@ -99,9 +150,14 @@ class RouteTest extends TestCase
             ['user_id' => 1],
             ['Authorization' => 'Bearer ' . $this->jwt]
         );
-        $this->assertEquals(200, $this->response->status());
+        $this->assertEquals(Response::HTTP_OK, $this->response->status());
     }
 
+    /**
+     * tearDown removes JWT from cache
+     *
+     * @return void
+     */
     public function tearDown(): void
     {
         Cache::forget($this->jwt);
