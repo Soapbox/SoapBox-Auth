@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 
 class AuthController extends Controller
 {
@@ -13,8 +14,8 @@ class AuthController extends Controller
 			'jwt' => 'required'
 		]);
 
-		if (app('redis')->sIsMember(env('REDIS_KEY'), $request->jwt)){
-			app('redis')->sRem(env('REDIS_KEY'), $request->jwt);
+		if (Cache::has($request->jwt)){
+			Cache::forget($request->jwt);
 			$code = Response::HTTP_OK;
 		} else {
 			$code = Response::HTTP_UNAUTHORIZED;
