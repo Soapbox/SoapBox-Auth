@@ -8,7 +8,7 @@ class SoapboxSocialiteManager extends SocialiteManager
 {
 	protected function createSlackDriver()
 	{
-		$config = $this->app['config']['services.slack'];
+		$config = config('services.slack');
 
 		return $this->buildProvider(
 			\SocialiteProviders\Slack\Provider::class, $config
@@ -17,7 +17,7 @@ class SoapboxSocialiteManager extends SocialiteManager
 
 	protected function createGraphDriver()
 	{
-		$config = $this->app['config']['services.graph'];
+		$config = config('services.graph');
 
 		return $this->buildProvider(
 			\SocialiteProviders\Graph\Provider::class, $config
