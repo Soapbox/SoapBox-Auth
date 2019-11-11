@@ -11,22 +11,9 @@ serviceList=(
 
 for i in "${!serviceList[@]}"
 do
+    php ${serviceList[$i]}/artisan --env=example
     echo "################################################################################";
     echo "# Running ${serviceList[$i]} Tests:"
     echo "################################################################################";
     ./${serviceList[$i]}/vendor/bin/phpunit --configuration ${serviceList[$i]}/phpunit.xml
 done
-
-#echo "################################################################################";
-#echo "# Running API-Gateway Tests:"
-#echo "################################################################################";
-#./api-gateway/vendor/bin/phpunit --configuration api-gateway/phpunit.xml
-#echo "################################################################################";
-#echo "";
-
-#echo "################################################################################";
-#echo "# Running Auth-Service Tests:"
-#echo "################################################################################";
-#./api-gateway/vendor/bin/phpunit --configuration api-gateway/phpunit.xml
-#echo "################################################################################";
-#echo "";
