@@ -1,0 +1,28 @@
+language: php
+
+dist: trusty
+
+php:
+  - 7.2.11
+
+env:
+  - DB=mysql
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+services:
+  - mysql
+  - redis-server
+
+before_install:
+  - phpenv config-rm xdebug.ini
+  - mysql -u root -e "CREATE USER 'homestead'@'localhost' IDENTIFIED BY 'secret';"
+  - mysql -u root -e "GRANT ALL ON *.* TO 'homestead'@'localhost';"
+  - ./install_deps
+
+script:
+  - ./scripts/build-travis-env-file
+  - php artisan --env=example
+  - ./run_tests

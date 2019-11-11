@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Any subsequent(*) commands which fail will cause the shell script to exit immediately
+set -e
+
+serviceList=(
+     'api-gateway'
+     'auth-service'
+     'email-service'
+ )
+
+for i in "${!serviceList[@]}"
+do
+    echo "################################################################################";
+    echo "# Running ${serviceList[$i]} Tests:"
+    echo "################################################################################";
+    ./${serviceList[$i]}/vendor/bin/phpunit --configuration ${serviceList[$i]}/phpunit.xml
+done
+
+#echo "################################################################################";
+#echo "# Running API-Gateway Tests:"
+#echo "################################################################################";
+#./api-gateway/vendor/bin/phpunit --configuration api-gateway/phpunit.xml
+#echo "################################################################################";
+#echo "";
+
+#echo "################################################################################";
+#echo "# Running Auth-Service Tests:"
+#echo "################################################################################";
+#./api-gateway/vendor/bin/phpunit --configuration api-gateway/phpunit.xml
+#echo "################################################################################";
+#echo "";
