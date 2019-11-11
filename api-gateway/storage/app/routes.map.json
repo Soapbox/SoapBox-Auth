@@ -1,0 +1,33 @@
+[
+    {
+        "service": "email",
+        "base-url": "email.soapboxhq.com",
+        "protocol": "http",
+        "endpoints": {
+            "POST": {
+                "send-email": {
+                    "url": "send-email",
+                    "auth": true
+                }
+            },
+            "GET": {
+                "health-check": {
+                    "url": "health-check",
+                    "auth": false
+                }
+            },
+            "PUT": {
+                "address": {
+                    "url": "address",
+                    "auth": true
+                }
+            },
+            "DELETE": {
+                "records": {
+                    "url": "records",
+                    "auth": true
+                }
+            }
+        }
+    }
+]
