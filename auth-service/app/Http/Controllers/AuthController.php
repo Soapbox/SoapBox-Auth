@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Libraries\iJWTLibrary;
-use Illuminate\Support\Facades\Redis;
+use Illuminate\Support\Facades\Cache;
 use App\Services\TokenGeneratorService;
 
 class AuthController extends Controller
@@ -36,7 +36,7 @@ class AuthController extends Controller
 			$token = $this->token_service->generateToken();
 
 			if ($token) {
-				Redis::set($this->token_service->getIat(), $token);
+				Cache::add($token, '', 10);
 			}
 
 			return response(
