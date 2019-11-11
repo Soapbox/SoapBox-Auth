@@ -23,6 +23,5 @@ before_install:
   - ./install_deps
 
 script:
-  - ./scripts/build-travis-env-file
   - php artisan --env=example
   - ./run_tests
