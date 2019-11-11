@@ -32,7 +32,7 @@ class TokenGeneratorService
 	 */
 	public function generateToken()
 	{
-		if ($this->provider && $this->code && in_array($this->provider, ['google', 'slack', 'microsoft'])) {
+		if ($this->provider && $this->code && in_array($this->provider, config('support.providers'))) {
 			$socialProviderUser = Socialite::driver($this->provider)->userFromToken($this->code);
 
 			$userExist = true; //assumption
