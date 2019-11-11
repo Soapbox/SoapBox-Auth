@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Any subsequent(*) commands which fail will cause the shell script to exit immediately
+set -e
+
+serviceList=(
+    'api-gateway'
+    'auth-service'
+    'email-service'
+)
+
+for i in "${!serviceList[@]}"
+do
+    echo "################################################################################";
+    echo "# composer install ${serviceList[$i]}"
+    echo "################################################################################";
+    composer self-update && composer install -n --prefer-dist --no-scripts -d ${serviceList[$i]}
+done
+
