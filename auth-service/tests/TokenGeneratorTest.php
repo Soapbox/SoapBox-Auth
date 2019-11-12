@@ -34,24 +34,37 @@ class TokenGeneratorTest extends TestCase
 
 		Socialite::shouldReceive('driver')->with('google')->andReturn($this->provider);
 
-		$this->token_service = new \App\Services\TokenGeneratorService(new FirebaseJWTLibrary());
-		$this->token_service->setProvider('google');
-		$this->token_service->setCode('ya29.Il-pBx5aS_JhAMwcBo5Ip_cWZ9W19TEYzRKlcLLqZkN4PaFEnrl24y8tXldBR-pPtWxKnwHKa8cpSsuxJXyW2OngfTwVS5G6HKe-KI3pXlP_3C0UdR1XRhYv1ebVwK-fgA"');
-
 		$this->jwt_library = new \App\Libraries\FirebaseJWTLibrary();
+
+		$this->token_service = new \App\Services\TokenGeneratorService($this->jwt_library);
+	}
+
+	public function testCannotGenerateTokenIfProviderIsNotSet()
+	{
+		$this->expectException(\InvalidArgumentException::class);
+		$this->token_service->generateToken(['provider' => '']);
 	}
 
 	public function testCannotGenerateTokenIfProviderIsNotSupported()
 	{
 		$this->expectException(\InvalidArgumentException::class);
 		$example = ['gogle', 'slck', 'micrsoft', 'unsupported']; //sample unsupported providers
-		$this->token_service->setProvider($example[array_rand($example, 1)]);
-		$this->token_service->generateToken();
+		$this->token_service->generateToken(['provider' => $example[array_rand($example, 1)]]);
+	}
+
+	public function testCannotGenerateTokenIfCodeIsNotSet()
+	{
+		$this->expectException(\InvalidArgumentException::class);
+		$this->token_service->generateToken(['provider' => 'google', 'code' => '']);
 	}
 
 	public function testCanGenerateTokenIfCodeAndProviderAreSet()
 	{
-		$token = $this->token_service->generateToken();
+		$token = $this->token_service->generateToken([
+			'provider' => 'google',
+			'code' => 'ya29.Il-pBx5aS_JhAMwcBo5Ip_cWZ9W19TEYzRKlcLLqZkN4PaFEnrl24y8tXldBR-pPtWxKnwHKa8cpSsuxJXyW2OngfTwVS5G6HKe-KI3pXlP_3C0UdR1XRhYv1ebVwK-fgA'
+		]);
+
 		$this->assertNotEmpty($token);
 
 		$decoded_payload = $this->jwt_library->decode($token);

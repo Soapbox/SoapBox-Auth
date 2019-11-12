@@ -30,11 +30,11 @@ class AuthController extends Controller
 			'provider' 		=> 'required|in:'. implode(',', config('support.providers'))
 		]);
 
-		$this->token_service->setProvider($request->provider);
-		$this->token_service->setCode($request->oauth_code);
-
 		try {
-			$token = $this->token_service->generateToken();
+			$token = $this->token_service->generateToken([
+				'provider' => $request->provider,
+				'code' => $request->oauth_code
+			]);
 
 			if ($token) {
 				Cache::add($token, '', 10);

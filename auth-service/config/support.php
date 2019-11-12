@@ -2,6 +2,6 @@
 
 return [
 	"providers" => [
-		'google', 'slack', 'microsoft'
+		'google', 'slack', 'graph'
 	]
 ];
