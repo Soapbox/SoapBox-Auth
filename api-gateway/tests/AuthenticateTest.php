@@ -82,6 +82,26 @@ class AuthenticateTest extends TestCase
     }
 
     /**
+     * This test checks that an invalid request is returned with 404 by the middleware
+     * Note a valid request if of the form [baseurl]/service/endpoint
+     *
+     * @return void
+     */
+    public function testInvalidRequestIsDenied(): void
+    {
+        $request = Request::create('/invalidrequest', 'GET');
+
+        $middleware = new Authenticate();
+
+        $response = $middleware->handle($request, function () {});
+
+        $this->assertEquals(
+            Response::HTTP_NOT_FOUND,
+            $response->getStatusCode()
+        );
+    }
+
+    /**
      * this test checks that the authentication middleware allows requests with valid
      * JWT through. It does so by adding the details of the service to the request params
      *
