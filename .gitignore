@@ -1,3 +1,5 @@
 vendor/
 web_client/node_modules/
 .vagrant/
+.idea/
+.DS_Store

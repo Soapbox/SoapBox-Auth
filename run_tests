@@ -1,0 +1,19 @@
+#!/bin/bash
+
+# Any subsequent(*) commands which fail will cause the shell script to exit immediately
+set -e
+
+serviceList=(
+     'api-gateway'
+     'auth-service'
+     'email-service'
+ )
+
+for i in "${!serviceList[@]}"
+do
+    php ${serviceList[$i]}/artisan --env=example
+    echo "################################################################################";
+    echo "# Running ${serviceList[$i]} Tests:"
+    echo "################################################################################";
+    ./${serviceList[$i]}/vendor/bin/phpunit --configuration ${serviceList[$i]}/phpunit.xml
+done
