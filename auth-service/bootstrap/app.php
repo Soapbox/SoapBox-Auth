@@ -21,7 +21,10 @@ $app = new Laravel\Lumen\Application(
     dirname(__DIR__)
 );
 
-$app->withFacades();
+$app->withFacades(
+    true,
+    [Laravel\Socialite\Facades\Socialite::class => 'Socialite']
+);
 
 $app->withEloquent();
 
@@ -82,7 +85,6 @@ $app->register(App\Providers\AppServiceProvider::class);
 $app->register(Illuminate\Redis\RedisServiceProvider::class);
 //$app->register(Laravel\Socialite\SocialiteServiceProvider::class);
 $app->register(App\Providers\SoapboxSocialiteServiceProvider::class);
-
 
 /*
 |--------------------------------------------------------------------------

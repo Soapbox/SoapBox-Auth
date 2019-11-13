@@ -11,4 +11,6 @@
 |
 */
 
+
 $router->post('/login', 'AuthController@login');
+
