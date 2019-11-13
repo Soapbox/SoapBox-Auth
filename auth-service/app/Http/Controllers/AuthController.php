@@ -22,7 +22,7 @@ class AuthController extends Controller
 	 * @return \Illuminate\Http\Response
 	 * @throws \Illuminate\Validation\ValidationException
 	 */
-    public function login(Request $request)
+	public function login(Request $request)
 	{
 		$this->validate($request, [
 			'oauth_code' 	=> 'required|string',

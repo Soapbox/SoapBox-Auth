@@ -5,7 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Socialite\Contracts\Factory;
 
-class SoapboxSocialiteProviders extends ServiceProvider
+class SoapboxSocialiteServiceProvider extends ServiceProvider
 {
 
 	/**

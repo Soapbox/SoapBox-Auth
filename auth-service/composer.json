@@ -14,7 +14,8 @@
         "predis/predis": "^1.1",
         "socialiteproviders/google": "^3.0",
         "socialiteproviders/microsoft-graph": "^2.1",
-        "socialiteproviders/slack": "^3.1"
+        "socialiteproviders/slack": "^3.1",
+        "laravel/socialite": "^4.2"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.4",
