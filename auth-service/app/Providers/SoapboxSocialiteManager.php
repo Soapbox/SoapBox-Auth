@@ -11,7 +11,7 @@ class SoapboxSocialiteManager extends SocialiteManager
 		$config = $this->app['config']['services.slack'];
 
 		return $this->buildProvider(
-			SlackProvider::class, $config
+			\SocialiteProviders\Slack\Provider::class, $config
 		);
 	}
 }
