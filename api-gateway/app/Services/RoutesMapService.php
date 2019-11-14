@@ -7,6 +7,7 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Response;
 use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ConnectException;
 
 /**
  * This service handles the heavy lifting
@@ -145,14 +146,28 @@ class RoutesMapService
 
             return response()->json($response, Response::HTTP_OK);
         } catch (ClientException $e) {
-            if ($e->hasResponse()) {
-                return response(
-                    $e->getResponse()->getReasonPhrase(),
-                    $e->getResponse()->getStatusCode()
-                );
-            } else {
-                return response($e->getMessage(), Response::HTTP_BAD_REQUEST);
-            }
+            return $this->handleException($e);
+        } catch (ConnectException $e) {
+            return $this->handleException($e);
+        }
+    }
+
+    /**
+     * this method handles exceptions received when request forwarding is attempted
+     *
+     * @param \Exception  $e
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    private function handleException(
+        $e
+    ): \Symfony\Component\HttpFoundation\Response {
+        if ($e->hasResponse()) {
+            return response(
+                $e->getResponse()->getReasonPhrase(),
+                $e->getResponse()->getStatusCode()
+            );
+        } else {
+            return response($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
     }
 }

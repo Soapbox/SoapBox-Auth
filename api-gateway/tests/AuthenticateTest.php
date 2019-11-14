@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Cache;
 
 class AuthenticateTest extends TestCase
 {
+    /**
+     * The jwt to be used in requests
+     * @var string
+     */
     private $jwt;
 
     /**
@@ -42,12 +46,12 @@ class AuthenticateTest extends TestCase
      */
     public function testRequestWithoutAuthorization(): void
     {
-        $request = Request::create('/email/health-check', 'GET');
+        $request = Request::create('/test/health-check', 'GET');
 
         $middleware = new Authenticate();
 
         $middleware->handle($request, function ($req) {
-            $this->assertEquals('email', $req->service);
+            $this->assertEquals('test', $req->service);
             $this->assertEquals('health-check', $req->path);
         });
     }
@@ -59,7 +63,7 @@ class AuthenticateTest extends TestCase
      */
     public function testRequestWithInvalidAuthorization(): void
     {
-        $request = Request::create('/email/send-body', 'GET');
+        $request = Request::create('/test/send-body', 'GET');
 
         $request->merge([
             'subject' => 'Title is in mixed CASE',
@@ -109,7 +113,7 @@ class AuthenticateTest extends TestCase
      */
     public function testRequestWithValidAuthorization(): void
     {
-        $request = Request::create('/email/send-body', 'GET');
+        $request = Request::create('/test/send-body', 'GET');
 
         $request->merge([
             'subject' => 'Title is in mixed CASE',

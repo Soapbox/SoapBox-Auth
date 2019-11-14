@@ -1,7 +1,7 @@
 [
     {
-        "service": "email",
-        "base-url": "email.soapboxhq.com",
+        "service": "test",
+        "base-url": "test.soapboxhqtestservice.com",
         "protocol": "http",
         "endpoints": {
             "POST": {

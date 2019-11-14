@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Cache;
 
 class RouteTest extends TestCase
 {
+    /**
+     * The jwt to be used in requests
+     * @var string
+     */
     private $jwt;
 
     /**
@@ -57,14 +61,12 @@ class RouteTest extends TestCase
     {
         $this->prepareValidResponse(Response::HTTP_OK);
 
-        $this->get('/email/health-check');
+        $this->get('/test/health-check');
 
         $this->assertEquals(
             Response::HTTP_OK,
             $this->response->getStatusCode()
         );
-
-        $this->app->instance(Client::class, null);
     }
 
     /**
@@ -93,7 +95,7 @@ class RouteTest extends TestCase
 
         $this->json(
             'POST',
-            '/email/send-email',
+            '/test/send-email',
             ['subject' => 'Sally', 'body' => 'Ommlette du fromage'],
             ['Authorization' => 'Bearer ' . $this->jwt]
         );
@@ -107,7 +109,7 @@ class RouteTest extends TestCase
      */
     public function testUnauthorizedPost(): void
     {
-        $response = $this->json('POST', '/email/send-email', [
+        $response = $this->json('POST', '/test/send-email', [
             'subject' => 'Sally',
             'body' => 'Ommlette du fromage'
         ]);
@@ -128,7 +130,7 @@ class RouteTest extends TestCase
 
         $response = $this->json(
             'PUT',
-            '/email/address',
+            '/test/address',
             ['user_id' => 1, 'email' => 'ommlette.du@fromage.com'],
             ['Authorization' => 'Bearer ' . $this->jwt]
         );
@@ -146,7 +148,7 @@ class RouteTest extends TestCase
 
         $response = $this->json(
             'DELETE',
-            '/email/records',
+            '/test/records',
             ['user_id' => 1],
             ['Authorization' => 'Bearer ' . $this->jwt]
         );
