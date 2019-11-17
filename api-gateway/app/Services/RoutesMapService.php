@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Response;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 /**
  * This service handles the heavy lifting
@@ -61,9 +62,7 @@ class RoutesMapService
         $code = null;
         $route = null;
 
-        if ($key === false) {
-            $code = Response::HTTP_NOT_FOUND;
-        } else {
+        if ($key !== false) {
             $route = $this->routes[$key];
         }
 
@@ -117,11 +116,8 @@ class RoutesMapService
      * @param string $url
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function handler(
-        Request $request,
-        $option,
-        $url
-    ): \Symfony\Component\HttpFoundation\Response {
+    public function handler(Request $request, $option, $url): SymfonyResponse
+    {
         $options = [];
 
         if ($request->headers->has('Authorization')) {
@@ -158,9 +154,8 @@ class RoutesMapService
      * @param \Exception  $e
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    private function handleException(
-        $e
-    ): \Symfony\Component\HttpFoundation\Response {
+    private function handleException($e): SymfonyResponse
+    {
         if ($e->hasResponse()) {
             return response(
                 $e->getResponse()->getReasonPhrase(),

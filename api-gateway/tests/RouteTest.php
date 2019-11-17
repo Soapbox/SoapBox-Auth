@@ -4,6 +4,7 @@ use Illuminate\Http\Response;
 use GuzzleHttp\Client;
 use Firebase\JWT\JWT;
 use Illuminate\Support\Facades\Cache;
+use GuzzleHttp\Psr7\Response as GuzzleResponse;
 
 class RouteTest extends TestCase
 {
@@ -43,7 +44,7 @@ class RouteTest extends TestCase
      */
     public function prepareValidResponse($code): void
     {
-        $response = new \GuzzleHttp\Psr7\Response($code);
+        $response = new GuzzleResponse($code);
         $client = Mockery::mock(Client::class);
         $client
             ->shouldReceive('request')

@@ -4,6 +4,7 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
 use App\Http\Controllers\RouteController;
+use GuzzleHttp\Psr7\Response as GuzzleResponse;
 
 class RouteControllerTest extends TestCase
 {
@@ -28,7 +29,9 @@ class RouteControllerTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $response = new \GuzzleHttp\Psr7\Response(Response::HTTP_OK);
+        $this->jwt =
+            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hdXRoLXNlcnZlci50ZXN0IiwiYXVkIjoiaHR0cDpcL1wvYXBpLWdhdGV3YXkudGVzdCIsImlhdCI6MTU3MjM0NDUxMywiZXhwIjoxNTcyOTQ5MzEzLCJuYW1lIjoiQ2FsZWIgTWJha3dlIiwiZW1haWwiOiJjYWxlYkBzb2FwYm94aHEuY29tIiwiYXZhdGFyIjoiaHR0cHM6XC9cL2xoNS5nb29nbGV1c2VyY29udGVudC5jb21cLy13Z3dXWF9LNkZWQVwvQUFBQUFBQUFBQUlcL0FBQUFBQUFBQUFBXC9BQ0hpM3JlYWM2cVRuX0pTak9RQU9WelBRXzZOV3VTWmRnXC9waG90by5qcGcifQ.fUsixNLW87PbTecfTt46TjEVgv1gT4byCkHbfizuFZ9";
+        $response = new GuzzleResponse(Response::HTTP_OK);
         $this->client = Mockery::mock(Client::class);
         $this->client->shouldReceive('request')->andReturn($response);
     }
@@ -88,9 +91,8 @@ class RouteControllerTest extends TestCase
             'service' => 'test',
             'path' => 'send-email'
         ]);
-        $jwt =
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hdXRoLXNlcnZlci50ZXN0IiwiYXVkIjoiaHR0cDpcL1wvYXBpLWdhdGV3YXkudGVzdCIsImlhdCI6MTU3MjM0NDUxMywiZXhwIjoxNTcyOTQ5MzEzLCJuYW1lIjoiQ2FsZWIgTWJha3dlIiwiZW1haWwiOiJjYWxlYkBzb2FwYm94aHEuY29tIiwiYXZhdGFyIjoiaHR0cHM6XC9cL2xoNS5nb29nbGV1c2VyY29udGVudC5jb21cLy13Z3dXWF9LNkZWQVwvQUFBQUFBQUFBQUlcL0FBQUFBQUFBQUFBXC9BQ0hpM3JlYWM2cVRuX0pTak9RQU9WelBRXzZOV3VTWmRnXC9waG90by5qcGcifQ.fUsixNLW87PbTecfTt46TjEVgv1gT4byCkHbfizuFZ9";
-        $request->headers->set('Authorization', 'Bearer ' . $jwt);
+
+        $request->headers->set('Authorization', 'Bearer ' . $this->jwt);
 
         $controller = new RouteController($request, $this->client);
         $response = $controller->post($request);
@@ -133,9 +135,7 @@ class RouteControllerTest extends TestCase
             'service' => 'test',
             'path' => 'address'
         ]);
-        $jwt =
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hdXRoLXNlcnZlci50ZXN0IiwiYXVkIjoiaHR0cDpcL1wvYXBpLWdhdGV3YXkudGVzdCIsImlhdCI6MTU3MjM0NDUxMywiZXhwIjoxNTcyOTQ5MzEzLCJuYW1lIjoiQ2FsZWIgTWJha3dlIiwiZW1haWwiOiJjYWxlYkBzb2FwYm94aHEuY29tIiwiYXZhdGFyIjoiaHR0cHM6XC9cL2xoNS5nb29nbGV1c2VyY29udGVudC5jb21cLy13Z3dXWF9LNkZWQVwvQUFBQUFBQUFBQUlcL0FBQUFBQUFBQUFBXC9BQ0hpM3JlYWM2cVRuX0pTak9RQU9WelBRXzZOV3VTWmRnXC9waG90by5qcGcifQ.fUsixNLW87PbTecfTt46TjEVgv1gT4byCkHbfizuFZ9";
-        $request->headers->set('Authorization', 'Bearer ' . $jwt);
+        $request->headers->set('Authorization', 'Bearer ' . $this->jwt);
 
         $controller = new RouteController($request, $this->client);
         $response = $controller->put($request);
@@ -156,9 +156,7 @@ class RouteControllerTest extends TestCase
             'service' => 'test',
             'path' => 'records'
         ]);
-        $jwt =
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hdXRoLXNlcnZlci50ZXN0IiwiYXVkIjoiaHR0cDpcL1wvYXBpLWdhdGV3YXkudGVzdCIsImlhdCI6MTU3MjM0NDUxMywiZXhwIjoxNTcyOTQ5MzEzLCJuYW1lIjoiQ2FsZWIgTWJha3dlIiwiZW1haWwiOiJjYWxlYkBzb2FwYm94aHEuY29tIiwiYXZhdGFyIjoiaHR0cHM6XC9cL2xoNS5nb29nbGV1c2VyY29udGVudC5jb21cLy13Z3dXWF9LNkZWQVwvQUFBQUFBQUFBQUlcL0FBQUFBQUFBQUFBXC9BQ0hpM3JlYWM2cVRuX0pTak9RQU9WelBRXzZOV3VTWmRnXC9waG90by5qcGcifQ.fUsixNLW87PbTecfTt46TjEVgv1gT4byCkHbfizuFZ9";
-        $request->headers->set('Authorization', 'Bearer ' . $jwt);
+        $request->headers->set('Authorization', 'Bearer ' . $this->jwt);
 
         $controller = new RouteController($request, $this->client);
         $response = $controller->delete($request);

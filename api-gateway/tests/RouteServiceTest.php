@@ -4,6 +4,7 @@ use GuzzleHttp\Client;
 use App\Services\RoutesMapService;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
+use GuzzleHttp\Psr7\Response as GuzzleResponse;
 
 class RouteServiceTest extends TestCase
 {
@@ -29,7 +30,7 @@ class RouteServiceTest extends TestCase
     public function setUp(): void
     {
         parent::setUp();
-        $response = new \GuzzleHttp\Psr7\Response(Response::HTTP_OK);
+        $response = new GuzzleResponse(Response::HTTP_OK);
         $client = Mockery::mock(Client::class);
         $client->shouldReceive('request')->andReturn($response);
 
@@ -102,20 +103,46 @@ class RouteServiceTest extends TestCase
     }
 
     /**
-     * This test checks that the service forwards requests to the underlying service
+     * This test checks that the service forwards requests and headers to the underlying service
      * eg. [base-url]/service/endpoint
      *
      * @return void
      */
-    public function testHandlerRouteForwarding(): void
+    public function testHandlerRouteForwardingWithHeaders(): void
     {
-        $route = $this->routesService->getRoute($this->request);
+        $jwt =
+            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC9hdXRoLXNlcnZlci50ZXN0IiwiYXVkIjoiaHR0cDpcL1wvYXBpLWdhdGV3YXkudGVzdCIsImlhdCI6MTU3MjM0NDUxMywiZXhwIjoxNTcyOTQ5MzEzLCJuYW1lIjoiQ2FsZWIgTWJha3dlIiwiZW1haWwiOiJjYWxlYkBzb2FwYm94aHEuY29tIiwiYXZhdGFyIjoiaHR0cHM6XC9cL2xoNS5nb29nbGV1c2VyY29udGVudC5jb21cLy13Z3dXWF9LNkZWQVwvQUFBQUFBQUFBQUlcL0FBQUFBQUFBQUFBXC9BQ0hpM3JlYWM2cVRuX0pTak9RQU9WelBRXzZOV3VTWmRnXC9waG90by5qcGcifQ.fUsixNLW87PbTecfTt46TjEVgv1gT4byCkHbfizuFZ9";
+        $options = [
+            'service' => 'test',
+            'path' => 'send-email',
+            'title' => 'The title of the email',
+            'body' => 'The body of the email'
+        ];
+        $expectedOptions = [
+            'headers' => ['Authorization' => "Bearer " . $jwt],
+            'verify' => false,
+            'json' => [
+                'title' => $options['title'],
+                'body' => $options['body']
+            ]
+        ];
+        $url = "http://test.soapboxhqtestservice.com/send-email";
 
-        $response = $this->routesService->handler(
-            $this->request,
-            "query",
-            $route->url
-        );
+        $response = new GuzzleResponse(Response::HTTP_OK);
+        $request = Request::create('/test/send-email', 'POST');
+        $request->merge($options);
+        $request->headers->set('Authorization', 'Bearer ' . $jwt);
+
+        $client = Mockery::mock(Client::class);
+        $client
+            ->shouldReceive('request')
+            ->with($request->method(), $url, $expectedOptions)
+            ->andReturn($response);
+
+        $routesService = new RoutesMapService($client);
+        $route = $routesService->getRoute($request);
+
+        $response = $routesService->handler($request, "json", $route->url);
 
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
     }
