@@ -143,6 +143,28 @@ class RouteControllerTest extends TestCase
     }
 
     /**
+     * A test for an unauthorized put.
+     * The request requires authorization, in this case, and we do not send in a JWT
+     *
+     * @return void
+     */
+    public function testUnauthorizedPut(): void
+    {
+        $request = Request::create('/test/address', 'PUT');
+        $request->merge([
+            'service' => 'test',
+            'path' => 'address'
+        ]);
+
+        $controller = new RouteController($request, $this->client);
+        $response = $controller->put($request);
+        $this->assertEquals(
+            Response::HTTP_UNAUTHORIZED,
+            $response->getStatusCode()
+        );
+    }
+
+    /**
      * A test for a valid deletion.
      * By Valid, means we have this endpoint mapped in our routes json file
      * And if the request requires authorization, like in this case, then we send in a JWT
@@ -161,5 +183,27 @@ class RouteControllerTest extends TestCase
         $controller = new RouteController($request, $this->client);
         $response = $controller->delete($request);
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+    }
+
+    /**
+     * A test for an unauthorized deletion.
+     * The request requires authorization, in this case, and we don't send in a JWT
+     *
+     * @return void
+     */
+    public function testUnauthorizedDelete(): void
+    {
+        $request = Request::create('/test/records', 'DELETE');
+        $request->merge([
+            'service' => 'test',
+            'path' => 'records'
+        ]);
+
+        $controller = new RouteController($request, $this->client);
+        $response = $controller->delete($request);
+        $this->assertEquals(
+            Response::HTTP_UNAUTHORIZED,
+            $response->getStatusCode()
+        );
     }
 }
