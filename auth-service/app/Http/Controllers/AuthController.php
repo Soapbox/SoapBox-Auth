@@ -10,15 +10,12 @@ class AuthController extends Controller
 {
 	public function logout(Request $request)
 	{
-		$this->validate($request, [
-			'jwt' => 'required'
-		]);
+		$token = $request->bearerToken();
+		$code = Response::HTTP_UNAUTHORIZED;
 
-		if (Cache::has($request->jwt)){
-			Cache::forget($request->jwt);
+		if (Cache::has($token)){
+			Cache::forget($token);
 			$code = Response::HTTP_OK;
-		} else {
-			$code = Response::HTTP_UNAUTHORIZED;
 		}
 
 		return response(null, $code);
