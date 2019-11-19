@@ -120,14 +120,11 @@ class RoutesMapService
     {
         $options = [];
 
-        if ($request->headers->has('Authorization')) {
-            $options['headers'] = [
-                'Authorization' => $request->header('Authorization')
-            ];
-        }
-
         // forward parameters
         $options[$option] = $request->all();
+
+        // forward headers
+        $options['headers'] = $request->headers->all();
 
         // disable ssl validation
         $options['verify'] = false;

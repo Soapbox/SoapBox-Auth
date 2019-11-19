@@ -118,20 +118,20 @@ class RouteServiceTest extends TestCase
             'title' => 'The title of the email',
             'body' => 'The body of the email'
         ];
-        $expectedOptions = [
-            'headers' => ['Authorization' => "Bearer " . $jwt],
-            'verify' => false,
-            'json' => [
-                'title' => $options['title'],
-                'body' => $options['body']
-            ]
-        ];
         $url = "http://test.soapboxhqtestservice.com/send-email";
 
         $response = new GuzzleResponse(Response::HTTP_OK);
         $request = Request::create('/test/send-email', 'POST');
         $request->merge($options);
         $request->headers->set('Authorization', 'Bearer ' . $jwt);
+        $expectedOptions = [
+            'verify' => false,
+            'json' => [
+                'title' => $options['title'],
+                'body' => $options['body']
+            ],
+            'headers' => $request->headers->all()
+        ];
 
         $client = Mockery::mock(Client::class);
         $client
