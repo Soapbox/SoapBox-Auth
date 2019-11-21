@@ -11,4 +11,5 @@
 |
 */
 
+$router->post('/login', 'AuthController@login');
 $router->post('/logout', 'AuthController@logout');
