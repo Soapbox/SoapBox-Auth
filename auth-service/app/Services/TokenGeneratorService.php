@@ -43,7 +43,7 @@ class TokenGeneratorService
 			$this->payload = $this->generatePayload();
 			$this->token = $this->jwt_library->encode($this->payload);
 		} else {
-			throw new UserNotFoundException('User not found.: ' . $socialProviderUser->getEmail(), Response::HTTP_NOT_FOUND);
+			throw new UserNotFoundException('User not found.: ' . $this->socialProviderUser->getEmail(), Response::HTTP_NOT_FOUND);
 		}
 
 		return $this->token;
