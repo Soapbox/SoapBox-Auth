@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Libraries\iJWTLibrary;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use App\Services\TokenGeneratorService;
 
@@ -48,15 +47,13 @@ class AuthController extends Controller
 			);
 
 		} catch (\Exception $e) {
-			Log::info('There was an error.', [
-				'error' => $e->getMessage()
-			]);
+			log_exception($e);
 
 			return response(
 				[
 					"token" => null,
 					"message" => $e->getMessage()
-				], $e->getCode()
+				], http_code_by_exception_type($e)
 			);
 		}
 	}
