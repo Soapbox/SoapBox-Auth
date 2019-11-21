@@ -14,3 +14,23 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+
+$router->get('/{any:.*}', [
+    "middleware" => "auth",
+    "uses" => "RouteController@get"
+]);
+
+$router->post('/{any:.*}', [
+    "middleware" => "auth",
+    "uses" => "RouteController@post"
+]);
+
+$router->put('/{any:.*}', [
+    "middleware" => "auth",
+    "uses" => "RouteController@put"
+]);
+
+$router->delete('/{any:.*}', [
+    "middleware" => "auth",
+    "uses" => "RouteController@delete"
+]);
