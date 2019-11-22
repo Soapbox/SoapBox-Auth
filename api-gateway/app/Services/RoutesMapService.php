@@ -123,7 +123,7 @@ class RoutesMapService
         // forward parameters
         $options[$option] = $request->all();
 
-        // forward headers an unset host (it's different this time)
+        // forward headers and unset host (it's different this time)
         $options['headers'] = $request->headers->all();
         unset($options['headers']['host']);
         unset($options['headers']['content-type']);

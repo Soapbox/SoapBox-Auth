@@ -121,7 +121,7 @@ class RouteServiceTest extends TestCase
     }
 
     /**
-     * This test checks that the getResponseBody returns a string if given a string
+     * This test checks that the getResponseBody returns a string if given a Json encoded string
      *
      * @return void
      */
@@ -132,6 +132,18 @@ class RouteServiceTest extends TestCase
             [],
             json_encode("Body Text")
         );
+        $body = $this->routesService->getResponseBody($response);
+        $this->assertEquals("Body Text", $body);
+    }
+
+    /**
+     * This test checks that the getResponseBody returns a string if given a raw string
+     *
+     * @return void
+     */
+    public function testGetResponseBodyReturnsRawString()
+    {
+        $response = new GuzzleResponse(Response::HTTP_OK, [], "Body Text");
         $body = $this->routesService->getResponseBody($response);
         $this->assertEquals("Body Text", $body);
     }
