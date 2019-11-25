@@ -178,9 +178,15 @@ class RouteServiceTest extends TestCase
             ],
             'headers' => $request->headers->all()
         ];
-        unset($expectedOptions['headers']['host']);
-        unset($expectedOptions['headers']['content-type']);
-        unset($expectedOptions['headers']['content-length']);
+
+        $excemptions = ['host', 'content-type', 'content-length'];
+        $expectedOptions['headers'] = array_filter(
+            $expectedOptions['headers'],
+            function ($k) use ($excemptions) {
+                return !in_array($k, $excemptions);
+            },
+            ARRAY_FILTER_USE_KEY
+        );
 
         $client = Mockery::mock(Client::class);
         $client

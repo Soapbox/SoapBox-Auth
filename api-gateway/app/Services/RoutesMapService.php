@@ -125,9 +125,17 @@ class RoutesMapService
 
         // forward headers and unset host (it's different this time)
         $options['headers'] = $request->headers->all();
-        unset($options['headers']['host']);
-        unset($options['headers']['content-type']);
-        unset($options['headers']['content-length']);
+
+        // headers that should not be forwarded.
+        $excemptions = ['host', 'content-type', 'content-length'];
+
+        $options['headers'] = array_filter(
+            $options['headers'],
+            function ($k) use ($excemptions) {
+                return !in_array($k, $excemptions);
+            },
+            ARRAY_FILTER_USE_KEY
+        );
 
         // disable ssl validation
         $options['verify'] = false;
