@@ -1,9 +1,10 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 
-class AuthLogoutTest extends TestCase
+class LogoutTest extends TestCase
 {
 	protected $token;
 
@@ -14,34 +15,11 @@ class AuthLogoutTest extends TestCase
 		$this->token = "9188040d-6c67-4c5b-b112-36a304b66dad";
 	}
 
-	public function testLogoutIsUnsuccessfulIfAuthorizationHeaderIsNull()
-	{
-		$this->post('/logout', [], [])->assertResponseStatus(Response::HTTP_UNAUTHORIZED);
-	}
-
-	public function testLogoutIsUnsuccessfulIfAuthorizationHeaderIsEmpty()
-	{
-		$this->post(
-			'/logout', [],
-			[
-				'Authorization' => ''
-			]
-		)->assertResponseStatus(Response::HTTP_UNAUTHORIZED);
-	}
-
-    public function testLogoutIsUnsuccessfulIfJWTTokenIsNotSetInRedisCache()
-    {
-		$this->post(
-			'/logout', [],
-			[
-				'Authorization' => 'Bearer ' . $this->token
-			]
-		)->assertResponseStatus(Response::HTTP_UNAUTHORIZED);
-    }
-
 	public function testLogoutIsSuccessfulIfJWTTokenIsSetInRedisCache()
 	{
-		Cache::add($this->token, "", 10); //set at login
+		$ttl = Carbon::now()->addDays(1);
+
+		Cache::add($this->token, "", $ttl); //set at login
 
 		$this->post(
 			'/logout', [],
