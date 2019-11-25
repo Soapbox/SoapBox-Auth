@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Libraries\iJWTLibrary;
@@ -36,7 +37,8 @@ class AuthController extends Controller
 			]);
 
 			if ($token) {
-				Cache::add($token, '', 10);
+				$ttl = Carbon::now()->addDays(91); //3months + 1 day
+				Cache::add($token, '', $ttl);
 			}
 
 			return response(
@@ -61,13 +63,10 @@ class AuthController extends Controller
 	public function logout(Request $request)
 	{
 		$token = $request->bearerToken();
-		$code = Response::HTTP_UNAUTHORIZED;
 
 		if (Cache::has($token)){
 			Cache::forget($token);
-			$code = Response::HTTP_OK;
+			return response(null, Response::HTTP_OK);
 		}
-
-		return response(null, $code);
 	}
 }
