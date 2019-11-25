@@ -165,7 +165,7 @@ class RoutesMapService
      * @param \Symfony\Component\HttpFoundation\Response $response
      * @return mixed
      */
-    public function getResponseBody($response)
+    private function getResponseBody($response)
     {
         $response = (string) $response->getBody();
 

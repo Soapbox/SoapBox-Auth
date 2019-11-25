@@ -103,52 +103,6 @@ class RouteServiceTest extends TestCase
     }
 
     /**
-     * This test checks that the getResponseBody returns an array if given a json array
-     *
-     * @return void
-     */
-    public function testGetResponseBodyReturnsArray()
-    {
-        $response = new GuzzleResponse(
-            Response::HTTP_OK,
-            [],
-            json_encode([
-                "name" => "Name body"
-            ])
-        );
-        $body = $this->routesService->getResponseBody($response);
-        $this->assertArrayHasKey("name", $body);
-    }
-
-    /**
-     * This test checks that the getResponseBody returns a string if given a Json encoded string
-     *
-     * @return void
-     */
-    public function testGetResponseBodyReturnsString()
-    {
-        $response = new GuzzleResponse(
-            Response::HTTP_OK,
-            [],
-            json_encode("Body Text")
-        );
-        $body = $this->routesService->getResponseBody($response);
-        $this->assertEquals("Body Text", $body);
-    }
-
-    /**
-     * This test checks that the getResponseBody returns a string if given a raw string
-     *
-     * @return void
-     */
-    public function testGetResponseBodyReturnsRawString()
-    {
-        $response = new GuzzleResponse(Response::HTTP_OK, [], "Body Text");
-        $body = $this->routesService->getResponseBody($response);
-        $this->assertEquals("Body Text", $body);
-    }
-
-    /**
      * This test checks that the service forwards requests and headers to the underlying service
      * eg. [base-url]/service/endpoint
      *

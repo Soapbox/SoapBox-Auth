@@ -39,12 +39,14 @@ class RouteTest extends TestCase
     /**
      * This function prepares a test to return a valid response to a guzzle request
      *
-     * @param int $code
+     * @param \GuzzleHttp\Psr7\Response $response
      * @return void
      */
-    public function prepareValidResponse($code): void
+    public function prepareValidResponse($response = null): void
     {
-        $response = new GuzzleResponse($code);
+        $response = isset($response)
+            ? $response
+            : new GuzzleResponse(Response::HTTP_OK);
         $client = Mockery::mock(Client::class);
         $client
             ->shouldReceive('request')
@@ -60,7 +62,7 @@ class RouteTest extends TestCase
      */
     public function testValidGet(): void
     {
-        $this->prepareValidResponse(Response::HTTP_OK);
+        $this->prepareValidResponse();
 
         $this->get('/test/health-check');
 
@@ -68,6 +70,82 @@ class RouteTest extends TestCase
             Response::HTTP_OK,
             $this->response->getStatusCode()
         );
+    }
+
+    /**
+     * This test checks that the API gateway forwards raw strings
+     * if received as response from the service it relays to
+     *
+     * @return void
+     */
+    public function testAPIGatewayForwardsRawString(): void
+    {
+        $response = new GuzzleResponse(Response::HTTP_OK, [], "Body Text");
+        $this->prepareValidResponse($response);
+
+        $this->get('/test/health-check');
+
+        $content = json_decode($this->response->getContent(), true);
+
+        $this->assertEquals(
+            Response::HTTP_OK,
+            $this->response->getStatusCode()
+        );
+        $this->assertEquals("Body Text", $content);
+    }
+
+    /**
+     * This test checks that the API gateway forwards JSON strings
+     * if received as response from the service it relays to
+     *
+     * @return void
+     */
+    public function testAPIGatewayForwardsJSONString(): void
+    {
+        $response = new GuzzleResponse(
+            Response::HTTP_OK,
+            [],
+            json_encode("Body Text")
+        );
+        $this->prepareValidResponse($response);
+
+        $this->get('/test/health-check');
+
+        $content = json_decode($this->response->getContent(), true);
+
+        $this->assertEquals(
+            Response::HTTP_OK,
+            $this->response->getStatusCode()
+        );
+        $this->assertEquals("Body Text", $content);
+    }
+
+    /**
+     * This test checks that the API gateway forwards JSON arrays
+     * if received as response from the service it relays to
+     *
+     * @return void
+     */
+    public function testAPIGatewayForwardsJSONArray(): void
+    {
+        $response = new GuzzleResponse(
+            Response::HTTP_OK,
+            [],
+            json_encode([
+                "name" => "Name body"
+            ])
+        );
+        $this->prepareValidResponse($response);
+
+        $this->get('/test/health-check');
+
+        $content = json_decode($this->response->getContent(), true);
+
+        $this->assertEquals(
+            Response::HTTP_OK,
+            $this->response->getStatusCode()
+        );
+        $this->assertArrayHasKey("name", $content);
     }
 
     /**
@@ -92,7 +170,7 @@ class RouteTest extends TestCase
      */
     public function testValidPost(): void
     {
-        $this->prepareValidResponse(Response::HTTP_OK);
+        $this->prepareValidResponse();
 
         $this->json(
             'POST',
@@ -110,7 +188,7 @@ class RouteTest extends TestCase
      */
     public function testUnauthorizedPost(): void
     {
-        $response = $this->json('POST', '/test/send-email', [
+        $this->json('POST', '/test/send-email', [
             'subject' => 'Sally',
             'body' => 'Ommlette du fromage'
         ]);
@@ -127,9 +205,9 @@ class RouteTest extends TestCase
      */
     public function testValidPut(): void
     {
-        $this->prepareValidResponse(Response::HTTP_OK);
+        $this->prepareValidResponse();
 
-        $response = $this->json(
+        $this->json(
             'PUT',
             '/test/address',
             ['user_id' => 1, 'email' => 'ommlette.du@fromage.com'],
@@ -145,9 +223,9 @@ class RouteTest extends TestCase
      */
     public function testValidDelete(): void
     {
-        $this->prepareValidResponse(Response::HTTP_OK);
+        $this->prepareValidResponse();
 
-        $response = $this->json(
+        $this->json(
             'DELETE',
             '/test/records',
             ['user_id' => 1],
