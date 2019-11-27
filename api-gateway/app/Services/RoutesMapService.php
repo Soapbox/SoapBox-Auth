@@ -123,8 +123,19 @@ class RoutesMapService
         // forward parameters
         $options[$option] = $request->all();
 
-        // forward headers
+        // forward headers and unset host (it's different this time)
         $options['headers'] = $request->headers->all();
+
+        // headers that should not be forwarded.
+        $excemptions = ['host', 'content-type', 'content-length'];
+
+        $options['headers'] = array_filter(
+            $options['headers'],
+            function ($k) use ($excemptions) {
+                return !in_array($k, $excemptions);
+            },
+            ARRAY_FILTER_USE_KEY
+        );
 
         // disable ssl validation
         $options['verify'] = false;
@@ -137,12 +148,30 @@ class RoutesMapService
                 $options
             );
 
+            $response = $this->getResponseBody($response);
+
             return response()->json($response, Response::HTTP_OK);
         } catch (ClientException $e) {
             return $this->handleException($e);
         } catch (ConnectException $e) {
             return $this->handleException($e);
         }
+    }
+
+    /**
+     * This method returns a jsondecoded representation of the response if it is valid json
+     * otherwise it returns a raw string
+     *
+     * @param \Symfony\Component\HttpFoundation\Response $response
+     * @return mixed
+     */
+    private function getResponseBody($response)
+    {
+        $response = (string) $response->getBody();
+
+        return json_decode($response) === null
+            ? $response
+            : json_decode($response, true);
     }
 
     /**

@@ -29,5 +29,28 @@
                 }
             }
         }
+    },
+    {
+        "service": "auth",
+        "base-url": "auth-service.test",
+        "protocol": "http",
+        "endpoints": {
+            "POST": {
+                "login": {
+                    "url": "login",
+                    "auth": false
+                },
+                "logout": {
+                    "url": "logout",
+                    "auth": true
+                }
+            },
+            "GET": {
+                "health-check": {
+                    "url": "",
+                    "auth": false
+                }
+            }
+        }
     }
 ]
