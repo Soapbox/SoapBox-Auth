@@ -54,11 +54,19 @@
                             </div>
                             <div class="col-sm-9">
                                 <button id="login" class="btn btn-lg btn-primary btn-block">
-                                    Finish <span class="fa fa-rocket"></span>
+                                    <span class="fa fa-spinner fa-spin" style="display: none;" id="login-in"></span> Finish <span class="fa fa-rocket"></span>
                                 </button>
                             </div>
                         </div>
-
+                        <br />
+                        <div class="row" id="error-message" style="display: none;">
+                            <div class="col-sm-12">
+                                <div class="alert alert-danger" role="alert">
+                                    <span id="error-message-text">
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

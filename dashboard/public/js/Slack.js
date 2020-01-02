@@ -1,7 +1,7 @@
 var Slack = {
     CLIENT_ID: "2287959210.829652005893",
     SCOPE: "identity.basic,identity.email",
-    REDIRECT_URL: "http://dashboard.test",
+    REDIRECT_URL: "http://dashboard.services.soapboxdev.com/",
     user: {},
     init: () => {
         var params = new URL(document.location).searchParams;
