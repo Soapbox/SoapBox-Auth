@@ -9,8 +9,8 @@ folders:
   - map: ./
     to: /home/vagrant/code
 sites:
-  - map: email-service.test
-    to: /home/vagrant/code/email-service/public
+  - map: dashboard.test
+    to: /home/vagrant/code/dashboard/public
 
   - map: auth-service.test
     to: /home/vagrant/code/auth-service/public
