@@ -6,7 +6,7 @@ set -e
 serviceList=(
     'api-gateway'
     'auth-service'
-    'email-service'
+    'dashboard'
 )
 
 for i in "${!serviceList[@]}"
