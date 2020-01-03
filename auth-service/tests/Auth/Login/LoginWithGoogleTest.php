@@ -19,8 +19,6 @@ class LoginWithGoogleTest extends AuthLoginTest
 		$this->provider->shouldReceive('userFromToken')->andReturn($this->abstractUser);
 
 		Socialite::shouldReceive('driver')->with($this->driver)->andReturn($this->provider);
-
-		$this->client = Mockery::mock(Client::class);
 	}
 
 	public function testCanGenerateJWTTokenForValidUser()
