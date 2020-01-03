@@ -33,5 +33,6 @@
         <server name="MAIL_DRIVER" value="array"/>
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="SESSION_DRIVER" value="array"/>
+        <server name="APP_KEY" value="nqqnj9x35utbubdk53hx2ninyey8e9dk"/>
     </php>
 </phpunit>
