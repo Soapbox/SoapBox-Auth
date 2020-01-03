@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use App\Libraries\iJWTLibrary;
 use Illuminate\Support\Facades\Cache;
 use App\Services\TokenGeneratorService;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -23,8 +24,8 @@ class AuthController extends Controller
 
 	/**
 	 * @param Request $request
-	 * @return \Illuminate\Http\Response
-	 * @throws \Illuminate\Validation\ValidationException
+	 * @return Response
+	 * @throws ValidationException
 	 */
 	public function login(Request $request)
 	{
@@ -40,9 +41,6 @@ class AuthController extends Controller
 			]);
 
             if ($request->has('soapbox-slug')) {
-                //http://api.soapboxdev.com/auth/google
-                //http://api.soapboxdev.com/auth/slack
-
                 $token = $this->client->request(
                     'POST',
                     'http://api.soapboxdev.com/auth/' . $request->provider,

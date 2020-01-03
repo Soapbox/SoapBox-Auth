@@ -27,11 +27,16 @@ class LoginWithSlackTest extends AuthLoginTest
 
 	public function testAssertStatusCodeIs200()
 	{
-		$this->assertAssertStatusCodeIs200();
+		$this->assertStatusCodeIs200();
 	}
 
 	public function testSeeJWTInRedisAfterSuccessfulLogin()
 	{
 		$this->assertSeeJWTInRedisAfterSuccessfulLogin();
 	}
+
+    public function testCanLoginWithSoapboxSlug()
+    {
+        $this->assertCanLogInWithSoapboxSlug();
+    }
 }

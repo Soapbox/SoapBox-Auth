@@ -1,5 +1,6 @@
 <?php
 
+use GuzzleHttp\Client;
 use Laravel\Socialite\Facades\Socialite;
 
 class LoginWithGoogleTest extends AuthLoginTest
@@ -18,6 +19,8 @@ class LoginWithGoogleTest extends AuthLoginTest
 		$this->provider->shouldReceive('userFromToken')->andReturn($this->abstractUser);
 
 		Socialite::shouldReceive('driver')->with($this->driver)->andReturn($this->provider);
+
+		$this->client = Mockery::mock(Client::class);
 	}
 
 	public function testCanGenerateJWTTokenForValidUser()
@@ -27,11 +30,16 @@ class LoginWithGoogleTest extends AuthLoginTest
 
 	public function testAssertStatusCodeIs200()
 	{
-		$this->assertAssertStatusCodeIs200();
+		$this->assertStatusCodeIs200();
 	}
 
 	public function testSeeJWTInRedisAfterSuccessfulLogin()
 	{
 		$this->assertSeeJWTInRedisAfterSuccessfulLogin();
 	}
+
+	public function testCanLoginWithSoapboxSlug()
+    {
+        $this->assertCanLogInWithSoapboxSlug();
+    }
 }
