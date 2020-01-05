@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Http\Controllers\AuthController;
+use GuzzleHttp\Psr7\Response as GuzzleResponse;
 
 class AuthLoginTest extends TestCase
 {
@@ -101,7 +102,8 @@ class AuthLoginTest extends TestCase
     {
         //Guzzle mock
         $client = Mockery::mock(Client::class);
-        $client->shouldReceive('request')->andReturn($this->test_token);
+        $response = new GuzzleResponse(Response::HTTP_OK, [], json_encode(['token' => $this->test_token]));
+        $client->shouldReceive('request')->andReturn($response);
 
         $request = Request::create('/login', 'POST');
         $request->merge([
