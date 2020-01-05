@@ -41,7 +41,7 @@ class AuthController extends Controller
 			]);
 
             if ($request->has('soapbox-slug')) {
-                $token = $this->client->request(
+                $response = $this->client->request(
                     'POST',
                     config('env.dev.login_url') . '/' . $request->get('provider'),
                     [
@@ -51,6 +51,8 @@ class AuthController extends Controller
                         ]
                     ]
                 );
+                $contents = json_decode($response->getBody()->getContents());
+                $token = $contents->token;
             }
 
 			if ($token) {
