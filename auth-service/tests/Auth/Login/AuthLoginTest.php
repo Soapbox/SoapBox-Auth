@@ -1,10 +1,10 @@
 <?php
 
-use App\Libraries\FirebaseJWTLibrary;
-use Illuminate\Support\Facades\Cache;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Libraries\FirebaseJWTLibrary;
+use Illuminate\Support\Facades\Cache;
 use App\Http\Controllers\AuthController;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 
