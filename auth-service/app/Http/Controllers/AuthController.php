@@ -6,13 +6,14 @@ use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Libraries\iJWTLibrary;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Cache;
 use App\Services\TokenGeneratorService;
 
 class AuthController extends Controller
 {
-    protected $client;
-    protected $token_service;
+    private $client;
+    private $token_service;
 
 	public function __construct(iJWTLibrary $library, Client $client)
 	{
