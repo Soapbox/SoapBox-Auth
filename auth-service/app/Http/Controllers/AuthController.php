@@ -5,11 +5,9 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Libraries\iJWTLibrary;
 use Illuminate\Support\Facades\Cache;
 use App\Services\TokenGeneratorService;
-use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -22,11 +20,13 @@ class AuthController extends Controller
 		$this->client = $client;
 	}
 
-	/**
-	 * @param Request $request
-	 * @return Response
-	 * @throws ValidationException
-	 */
+    /**
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Validation\ValidationException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
 	public function login(Request $request)
 	{
 	    $this->validate($request, [
