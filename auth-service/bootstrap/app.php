@@ -97,6 +97,7 @@ $app->register(App\Providers\SoapboxSocialiteServiceProvider::class);
 $app->configure('services');
 $app->configure('keys');
 $app->configure('support');
+$app->configure('env');
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
