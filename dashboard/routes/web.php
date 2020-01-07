@@ -22,3 +22,7 @@ Route::get('app', function () {
 Route::get('slack-login', [
     "uses" => "Auth\SlackController@login"
 ]);
+
+Route::get('google-login', [
+    "uses" => "Auth\GoogleController@login"
+]);

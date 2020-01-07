@@ -13,8 +13,8 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    protected $client;
-    protected $token_service;
+	protected $client;
+	protected $token_service;
 
 	public function __construct(iJWTLibrary $library, Client $client)
 	{
@@ -29,31 +29,32 @@ class AuthController extends Controller
 	 */
 	public function login(Request $request)
 	{
-	    $this->validate($request, [
+		$this->validate($request, [
 			'oauth_code' 	=> 'required|string',
-			'provider' 		=> 'required|in:'. implode(',', config('support.providers'))
+			'provider' 		=> 'required|in:' . implode(',', config('support.providers'))
 		]);
 
 		try {
-			$token = $this->token_service->generateToken([
-				'provider' => $request->get('provider'),
-				'code' => $request->get('oauth_code')
-			]);
-
-            if ($request->has('soapbox-slug')) {
-                $response = $this->client->request(
-                    'POST',
-                    config('env.dev.login_url') . '/' . $request->get('provider'),
-                    [
-                        'form_params' => [
-                            'code' => $request->get('oauth_code'),
-                            'soapbox-slug' => $request->get('soapbox-slug')
-                        ]
-                    ]
-                );
-                $contents = json_decode($response->getBody()->getContents());
-                $token = $contents->token;
-            }
+			if ($request->has('soapbox-slug') && $request->has('redirectUri')) {
+				$response = $this->client->request(
+					'POST',
+					'http://api.soapboxdev.com/auth/' . $request->get('provider'),
+					[
+						'form_params' => [
+							'code' => $request->get('oauth_code'),
+							'soapbox-slug' => $request->get('soapbox-slug'),
+							'redirectUri' => $request->get('redirectUri')
+						]
+					]
+				);
+				$contents = json_decode($response->getBody()->getContents());
+				$token = $contents->token;
+			} else {
+				$token = $this->token_service->generateToken([
+					'provider' => $request->get('provider'),
+					'code' => $request->get('oauth_code')
+				]);
+			}
 
 			if ($token) {
 				$ttl = Carbon::now()->addDays(91); //3months + 1 day
@@ -64,9 +65,9 @@ class AuthController extends Controller
 				[
 					"token" => $token,
 					"message" => "Success."
-				], Response::HTTP_OK
+				],
+				Response::HTTP_OK
 			);
-
 		} catch (\Exception $e) {
 			log_exception($e);
 
@@ -74,7 +75,8 @@ class AuthController extends Controller
 				[
 					"token" => null,
 					"message" => $e->getMessage()
-				], http_code_by_exception_type($e)
+				],
+				http_code_by_exception_type($e)
 			);
 		}
 	}
@@ -83,7 +85,7 @@ class AuthController extends Controller
 	{
 		$token = $request->bearerToken();
 
-		if (Cache::has($token)){
+		if (Cache::has($token)) {
 			Cache::forget($token);
 			return response(null, Response::HTTP_OK);
 		}

@@ -22,9 +22,9 @@
             <div class="card">
                 <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
                     <div class="card-body">
-                        <button id="login-with-google" class="btn btn-lg btn-danger btn-block" data-target="#collapseTwo">
+                        <a id="login-with-google" class="btn btn-lg btn-danger btn-block" data-target="#collapseTwo">
                             <span id="google-login-verb">Login</span> with <span class="fa fa-google"></span>
-                        </button>
+                        </a>
                         <br />
                         <a id="login-with-slack" class="btn btn-lg btn-dark btn-block" href="" data-target="#collapseTwo">
                             <span id="slack-login-verb">Login</span> with <span class="fa fa-slack"></span>
@@ -47,12 +47,12 @@
                         </div>
                         <br />
                         <div class="row">
-                            <div class="col-sm-3">
+                            <div class="col-sm-4">
                                 <button class="btn btn-lg btn-dark btn-block" data-toggle="collapse" data-target="#collapseOne">
                                     Go <span class="fa fa-arrow-left"></span>
                                 </button>
                             </div>
-                            <div class="col-sm-9">
+                            <div class="col-sm-8">
                                 <button id="login" class="btn btn-lg btn-primary btn-block">
                                     <span class="fa fa-spinner fa-spin" style="display: none;" id="login-in"></span> Finish <span class="fa fa-rocket"></span>
                                 </button>
@@ -80,6 +80,5 @@
 <script src="{{ asset('js/Google.js') }}"></script>
 <script src="{{ asset('js/Slack.js') }}"></script>
 <script src="{{ asset('js/Login.js') }}"></script>
-<script async defer src="https://apis.google.com/js/api.js" onload="this.onload=function(){};Google.init()" onreadystatechange="if (this.readyState === 'complete') this.onload()">
 </script>
 @endsection

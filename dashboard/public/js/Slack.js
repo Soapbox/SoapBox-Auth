@@ -50,7 +50,6 @@ var Slack = {
         $("#collapseTwo").collapse("show");
         Login.provider = "slack";
         Login.access_token = Slack.user.access_token;
-        Login.complete();
     }
 };
 
