@@ -65,34 +65,37 @@
 
 @section('content')
 <div class="flex-center position-ref full-height">
-    @if (Route::has('login'))
-    <div class="top-right links">
-        @auth
-        <a href="{{ url('/home') }}">Home</a>
-        @else
-        <a href="{{ route('login') }}">Login</a>
-
-        @if (Route::has('register'))
-        <a href="{{ route('register') }}">Register</a>
-        @endif
-        @endauth
-    </div>
-    @endif
-
     <div class="content">
-        <div class="title m-b-md">
-            Laravel
+        <div class="title">
+            Soapbox Dashboard
         </div>
 
-        <div class="links">
-            <a href="https://laravel.com/docs">Docs</a>
-            <a href="https://laracasts.com">Laracasts</a>
-            <a href="https://laravel-news.com">News</a>
-            <a href="https://blog.laravel.com">Blog</a>
-            <a href="https://nova.laravel.com">Nova</a>
-            <a href="https://forge.laravel.com">Forge</a>
-            <a href="https://vapor.laravel.com">Vapor</a>
-            <a href="https://github.com/laravel/laravel">GitHub</a>
+        <div>
+            Timeframe:
+            <a href="/app?days=1">1</a> |
+            <a href="/app?days=30">30</a> |
+            <a href="/app?days=60">60</a> |
+            <a href="/app?days=90">90</a> |
+            <a href="/app?days={{ $thisYear }}">This Year</a> |
+            <a href="/app?days={{ $allTime }}">All Time</a>
+        </div>
+        <br />
+        <p>Total Results: {{ count($soapboxes) }} </p>
+        <hr />
+        <div>
+            @foreach ($soapboxes as $soapbox)
+            <p>
+                {{ $soapbox->name }} ( {{ $soapbox->domain }} ) &middot;
+                <a href="{{action('DashboardController@showForSlug', ['slug' => $soapbox->slug]) }}">{{ $soapbox->slug }}</a> &middot;
+                Count of Users: {{ $soapbox->user_count }}
+                Last Active:
+                @if ($soapbox->last_active_at)
+                {{ \Carbon\Carbon::createFromTimeStamp(strtotime($soapbox->last_active_at))->diffForHumans() }}
+                @else
+                never
+                @endif
+            </p>
+            @endforeach
         </div>
     </div>
 </div>

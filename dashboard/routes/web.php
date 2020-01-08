@@ -15,9 +15,13 @@ Route::get('/', function () {
     return view('login');
 });
 
-Route::get('app', function () {
-    return view('welcome');
-});
+Route::get('app', [
+    "uses" => "DashboardController@show"
+]);
+
+Route::get('app/{slug}', [
+    "uses" => "DashboardController@showForSlug"
+]);
 
 Route::get('slack-login', [
     "uses" => "Auth\SlackController@login"
