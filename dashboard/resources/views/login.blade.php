@@ -25,10 +25,10 @@
                         <a id="login-with-google" class="btn btn-lg btn-danger btn-block" data-target="#collapseTwo">
                             <span id="google-login-verb">Login</span> with <span class="fa fa-google"></span>
                         </a>
-                        <br />
+                        <!-- <br />
                         <a id="login-with-slack" class="btn btn-lg btn-dark btn-block" href="" data-target="#collapseTwo">
                             <span id="slack-login-verb">Login</span> with <span class="fa fa-slack"></span>
-                        </a>
+                        </a> -->
                     </div>
                 </div>
             </div>

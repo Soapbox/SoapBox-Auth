@@ -35,7 +35,7 @@ class GoogleController extends Controller
         ]);
 
         if ($request->error) {
-            return redirect('/', ['error' => $request->error]);
+            return redirect('/?error=' . $request->error);
         } elseif (!$request->code) {
             // If we don't have an authorization code then get one
             $authUrl = $provider->getAuthorizationUrl([
