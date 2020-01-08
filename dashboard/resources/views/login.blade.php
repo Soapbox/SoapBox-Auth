@@ -80,5 +80,4 @@
 <script src="{{ asset('js/Google.js') }}"></script>
 <script src="{{ asset('js/Slack.js') }}"></script>
 <script src="{{ asset('js/Login.js') }}"></script>
-</script>
 @endsection

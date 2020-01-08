@@ -1,5 +1,5 @@
 @extends('layout')
-@section('title', 'Welcome')
+@section('title', 'Dashboard')
 
 @section('links')
 <!-- Fonts -->
