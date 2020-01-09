@@ -13,7 +13,6 @@ class Authenticate
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
-     * @param  string  $role
      * @return mixed
      */
     public function handle($request, Closure $next)
@@ -23,12 +22,15 @@ class Authenticate
         if ($jwt) {
             try {
                 $decoded = JWT::decode($jwt, env('JWT_SECRET'), ['HS256']);
+                if ($request->path() == '/') {
+                    return redirect('app');
+                }
                 return $next($request);
             } catch (ExpiredException $e) {
-                return redirect('/');
+                return $this->redirectTo($request, $next);
             }
         } else {
-            return redirect('/');
+            return $this->redirectTo($request, $next);
         }
     }
 
@@ -36,12 +38,19 @@ class Authenticate
      * Get the path the user should be redirected to when they are not authenticated.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
      * @return string|null
      */
-    protected function redirectTo($request)
+    protected function redirectTo($request, $next)
     {
         if (!$request->expectsJson()) {
-            return route('login');
+            if ($request->path() == '/') {
+                return $next($request);
+            } else {
+                return redirect('/');
+            }
+        } else {
+            return response()->json("Welcome");
         }
     }
 }

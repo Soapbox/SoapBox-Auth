@@ -28,6 +28,13 @@ class LoginController extends Controller
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
+    public function logout()
+    {
+        session()->forget('jwt');
+
+        return redirect('/');
+    }
+
     public function login(Request $request, Client $client)
     {
         // validations. To be migrated...

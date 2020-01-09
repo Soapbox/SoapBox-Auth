@@ -11,18 +11,23 @@
 |
 */
 
-// Route::group(['middleware' => 'web'], function () {
-Route::get('/', function () {
-    return view('login');
+Route::group(['middleware' => 'auth'], function () {
+    Route::get('/', function () {
+        return view('login');
+    });
+
+    Route::get('app', [
+        "uses" => "DashboardController@show"
+    ]);
+
+    Route::get('app/{slug}', [
+        "uses" => "DashboardController@showForSlug"
+    ]);
+
+    Route::get('logout', [
+        "uses" => "Auth\LoginController@logout"
+    ]);
 });
-
-Route::get('app', [
-    "uses" => "DashboardController@show"
-])->middleware("auth");
-
-Route::get('app/{slug}', [
-    "uses" => "DashboardController@showForSlug"
-])->middleware("auth");
 
 Route::get('google-login', [
     "uses" => "Auth\GoogleController@login"
@@ -31,4 +36,3 @@ Route::get('google-login', [
 Route::post('login', [
     "uses" => "Auth\LoginController@login"
 ]);
-// });

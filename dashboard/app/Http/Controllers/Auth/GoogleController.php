@@ -31,7 +31,8 @@ class GoogleController extends Controller
             'clientSecret' => env("GOOGLE_SECRET"),
             'redirectUri'  => env("GOOGLE_REDIRECT_URI"),
             'scopes'       => explode(env("GOOGLE_SCOPE"), " "),
-            'access_type'  => "offline"
+            'access_type'  => "offline",
+            'hostedDomain' => 'soapboxhq.com',
         ]);
 
         if ($request->error) {
