@@ -6,8 +6,7 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ConnectException;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class LoginController extends Controller
 {
@@ -31,31 +30,44 @@ class LoginController extends Controller
 
     public function login(Request $request, Client $client)
     {
+        // validations. To be migrated...
+        $status = $request->validate([
+            "oauth_code"    => "required",
+            "provider"      => "required",
+            "redirectUri"   => "required|url",
+            "soapbox-slug"  => "required"
+        ]);
+
         $client = $client ? $client : new Client();
 
         $params = $request->all();
 
-        try {
-            $response = $client->request(
-                'POST',
-                env('API_URL') . '/auth/login',
-                [
-                    'form_params' => $params
-                ]
-            );
-            $contents = json_decode($response->getBody()->getContents());
+        $response = $client->request(
+            'POST',
+            env('API_URL') . '/auth/login',
+            [
+                'form_params' => $params
+            ]
+        );
+        $contents = json_decode($response->getBody()->getContents());
 
-            if (isset($contents->token)) {
-                $token = $contents->token;
-                session(["jwt" => $token]);
-                return redirect('app');
-            } else {
-                return redirect('/')->with('message', "A problem happened during login");
-            }
-        } catch (ClientException $e) {
-            return $this->handleException($e);
-        } catch (ConnectException $e) {
-            return $this->handleException($e);
+        if (isset($contents->token)) {
+            $token = $contents->token;
+            session(["jwt" => $token]);
+            return redirect('app');
+        } else {
+            return $this->handleErrorRedirect("A problem happened during login");
         }
+    }
+
+    /**
+     * this method handles exceptions received when request forwarding is attempted
+     *
+     * @param \Exception  $e
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    private function handleErrorRedirect($message): SymfonyResponse
+    {
+        return redirect('/')->with('message', $message);
     }
 }
