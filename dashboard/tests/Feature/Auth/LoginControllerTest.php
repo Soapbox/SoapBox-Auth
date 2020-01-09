@@ -58,4 +58,18 @@ class LoginControllerTest extends TestCase
         $response->assertRedirect('/');
         $response->assertSessionHas("message", "A problem happened during login");
     }
+
+    /**
+     * A test for logout
+     *
+     * @return void
+     */
+    public function test_logout()
+    {
+        $response = $this->get('/logout');
+
+        $response->assertStatus(302);
+        $response->assertRedirect('/');
+        $response->assertSessionMissing('jwt');
+    }
 }
