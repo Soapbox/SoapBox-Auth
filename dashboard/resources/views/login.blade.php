@@ -22,6 +22,11 @@
             <div class="card">
                 <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
                     <div class="card-body">
+                        @if(session("message"))
+                        <div class="alert alert-danger" role="alert">
+                            {{session("message")}}
+                        </div>
+                        @endif
                         <a id="login-with-google" class="btn btn-lg btn-danger btn-block" data-target="#collapseTwo">
                             <span id="google-login-verb">Login</span> with <span class="fa fa-google"></span>
                         </a>
@@ -35,38 +40,47 @@
             <div class="card">
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
                     <div class="card-body">
-                        <label for="slug">Your <b>slug</b></label>
-                        <div class="input-group mb-3">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="basic-addon3">https://</span>
-                            </div>
-                            <input name="slug" type="text" class="form-control" id="slug" aria-describedby="basic-addon3">
-                            <div class="input-group-append">
-                                <span class="input-group-text" id="basic-addon3">.soapboxhq.com</span>
-                            </div>
-                        </div>
-                        <br />
-                        <div class="row">
-                            <div class="col-sm-4">
-                                <button class="btn btn-lg btn-dark btn-block" data-toggle="collapse" data-target="#collapseOne">
-                                    Go <span class="fa fa-arrow-left"></span>
-                                </button>
-                            </div>
-                            <div class="col-sm-8">
-                                <button id="login" class="btn btn-lg btn-primary btn-block">
-                                    <span class="fa fa-spinner fa-spin" style="display: none;" id="login-in"></span> Finish <span class="fa fa-rocket"></span>
-                                </button>
-                            </div>
-                        </div>
-                        <br />
-                        <div class="row" id="error-message" style="display: none;">
-                            <div class="col-sm-12">
-                                <div class="alert alert-danger" role="alert">
-                                    <span id="error-message-text">
-                                    </span>
+                        <form method="POST" action="login" name="login">
+                            @csrf
+                            <!-- HIDDEN VALUES -->
+                            <input type="hidden" name="oauth_code" />
+                            <input type="hidden" name="provider" value="google" />
+                            <input type="hidden" name="redirectUri" value="{{env('GOOGLE_REDIRECT_URI')}}" />
+
+                            <!-- VISIBLE VALUES -->
+                            <label for="slug">Your <b>slug</b></label>
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon3">https://</span>
+                                </div>
+                                <input name="soapbox-slug" type="text" class="form-control" id="slug" aria-describedby="basic-addon3">
+                                <div class="input-group-append">
+                                    <span class="input-group-text" id="basic-addon3">.soapboxhq.com</span>
                                 </div>
                             </div>
-                        </div>
+                            <br />
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <button class="btn btn-lg btn-dark btn-block" data-toggle="collapse" data-target="#collapseOne">
+                                        Go <span class="fa fa-arrow-left"></span>
+                                    </button>
+                                </div>
+                                <div class="col-sm-8">
+                                    <button type="submit" id="login" class="btn btn-lg btn-primary btn-block">
+                                        <span class="fa fa-spinner fa-spin" style="display: none;" id="login-in"></span> Finish <span class="fa fa-rocket"></span>
+                                    </button>
+                                </div>
+                            </div>
+                            <br />
+                            <div class="row" id="error-message" style="display: none;">
+                                <div class="col-sm-12">
+                                    <div class="alert alert-danger" role="alert">
+                                        <span id="error-message-text">
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>

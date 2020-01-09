@@ -20,7 +20,7 @@ var Slack = {
         }
     },
     triggerOAUTH: code => {
-        var url = `/slack-login`;
+        var url = `/api/slack-login`;
 
         $.get(url, {
             code: code

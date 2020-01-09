@@ -41,7 +41,9 @@ class GoogleController extends Controller
             $authUrl = $provider->getAuthorizationUrl([
                 'state' => time() * 1000
             ]);
-            session('oauth2state', $provider->getState());
+            session([
+                'oauth2state' => $provider->getState()
+            ]);
             return redirect($authUrl);
         }
     }

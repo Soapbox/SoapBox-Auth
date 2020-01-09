@@ -2,10 +2,36 @@
 
 namespace App\Http\Middleware;
 
-use Illuminate\Auth\Middleware\Authenticate as Middleware;
+use Closure;
+use \Firebase\JWT\JWT;
+use \Firebase\JWT\ExpiredException;
 
-class Authenticate extends Middleware
+class Authenticate
 {
+    /**
+     * Handle the incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @param  string  $role
+     * @return mixed
+     */
+    public function handle($request, Closure $next)
+    {
+        $jwt = session("jwt");
+
+        if ($jwt) {
+            try {
+                $decoded = JWT::decode($jwt, env('JWT_SECRET'), ['HS256']);
+                return $next($request);
+            } catch (ExpiredException $e) {
+                return redirect('/');
+            }
+        } else {
+            return redirect('/');
+        }
+    }
+
     /**
      * Get the path the user should be redirected to when they are not authenticated.
      *
@@ -14,7 +40,7 @@ class Authenticate extends Middleware
      */
     protected function redirectTo($request)
     {
-        if (! $request->expectsJson()) {
+        if (!$request->expectsJson()) {
             return route('login');
         }
     }

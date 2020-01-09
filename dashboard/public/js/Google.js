@@ -3,6 +3,8 @@ var Google = {
     init: () => {
         var params = new URL(document.location).searchParams;
 
+        console.log(params);
+
         if (
             params.get("code") &&
             params.get("state") &&
@@ -26,6 +28,7 @@ var Google = {
         $("#login-with-google").attr("href", href);
     },
     complete: () => {
+        console.log(Google.user);
         $("#collapseTwo").collapse("show");
         Login.provider = "google";
         Login.access_token = Google.user.code;

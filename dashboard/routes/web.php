@@ -11,22 +11,24 @@
 |
 */
 
+// Route::group(['middleware' => 'web'], function () {
 Route::get('/', function () {
     return view('login');
 });
 
 Route::get('app', [
     "uses" => "DashboardController@show"
-]);
+])->middleware("auth");
 
 Route::get('app/{slug}', [
     "uses" => "DashboardController@showForSlug"
-]);
-
-Route::get('slack-login', [
-    "uses" => "Auth\SlackController@login"
-]);
+])->middleware("auth");
 
 Route::get('google-login', [
     "uses" => "Auth\GoogleController@login"
 ]);
+
+Route::post('login', [
+    "uses" => "Auth\LoginController@login"
+]);
+// });

@@ -35,7 +35,7 @@ class SlackControllerTest extends TestCase
      */
     public function test_login()
     {
-        $response = $this->get('/slack-login');
+        $response = $this->get('/api/slack-login');
 
         $response->assertStatus(200);
     }

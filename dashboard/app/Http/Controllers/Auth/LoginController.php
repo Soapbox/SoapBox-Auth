@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use GuzzleHttp\Client;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ConnectException;
 
 class LoginController extends Controller
 {
@@ -19,8 +22,6 @@ class LoginController extends Controller
     |
     */
 
-    use AuthenticatesUsers;
-
     /**
      * Where to redirect users after login.
      *
@@ -28,13 +29,33 @@ class LoginController extends Controller
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public function login(Request $request, Client $client)
     {
-        $this->middleware('guest')->except('logout');
+        $client = $client ? $client : new Client();
+
+        $params = $request->all();
+
+        try {
+            $response = $client->request(
+                'POST',
+                env('API_URL') . '/auth/login',
+                [
+                    'form_params' => $params
+                ]
+            );
+            $contents = json_decode($response->getBody()->getContents());
+
+            if (isset($contents->token)) {
+                $token = $contents->token;
+                session(["jwt" => $token]);
+                return redirect('app');
+            } else {
+                return redirect('/')->with('message', "A problem happened during login");
+            }
+        } catch (ClientException $e) {
+            return $this->handleException($e);
+        } catch (ConnectException $e) {
+            return $this->handleException($e);
+        }
     }
 }
