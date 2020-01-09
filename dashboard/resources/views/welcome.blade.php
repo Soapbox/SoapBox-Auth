@@ -47,6 +47,10 @@
         font-size: 84px;
     }
 
+    .tiny {
+        font-size: 15px;
+    }
+
     .links>a {
         color: #636b6f;
         padding: 0 25px;
@@ -68,6 +72,9 @@
     <div class="content">
         <div class="title">
             Soapbox Dashboard
+            <a href="logout">
+                <p class="tiny">Logout</p>
+            </a>
         </div>
 
         <div>

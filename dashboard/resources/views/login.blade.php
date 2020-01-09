@@ -61,7 +61,7 @@
                             <br />
                             <div class="row">
                                 <div class="col-sm-4">
-                                    <button class="btn btn-lg btn-dark btn-block" data-toggle="collapse" data-target="#collapseOne">
+                                    <button type="button" class="btn btn-lg btn-dark btn-block" data-toggle="collapse" data-target="#collapseOne">
                                         Go <span class="fa fa-arrow-left"></span>
                                     </button>
                                 </div>
