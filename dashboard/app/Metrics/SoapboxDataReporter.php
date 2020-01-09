@@ -1,8 +1,8 @@
 <?php
 namespace App\Metrics;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\DatabaseManager;
-use App\Api;
 
 class SoapboxDataReporter
 {
@@ -21,8 +21,8 @@ class SoapboxDataReporter
         $this->database = $database;
     }
 
-    public function getSoapboxesData($days = 30) {
-
+    public function getSoapboxesData($days = 30)
+    {
         $sql = 'SELECT count(users.id) as user_count, soapboxes.slug, soapboxes.name, soapboxes.domain, soapboxes.last_active_at
         FROM users, soapboxes
         WHERE soapboxes.id = users.soapbox_id
@@ -37,25 +37,32 @@ class SoapboxDataReporter
         return $result;
     }
 
-    public function getSoapboxData($slug) {
-        $sql = 'SELECT count(users.id) as user_count, soapboxes.slug, soapboxes.name, soapboxes.domain,
-                (SELECT count(id) FROM users WHERE is_deferred = 1 AND deactivated_at IS NULL AND deleted_at IS NULL AND soapbox_id = soapboxes.id ) as deferred_count,
-                (SELECT count(id) FROM users WHERE deactivated_at IS NOT NULL AND soapbox_id = soapboxes.id ) as deactivated_count
-        FROM users, soapboxes
-        WHERE soapboxes.id = users.soapbox_id
-            AND users.deactivated_at IS NULL
-            AND users.deleted_at IS NULL
-            AND is_deferred = 0
-            AND soapboxes.slug = ?
-        GROUP BY soapboxes.id
-        ORDER BY user_count DESC';
+    public function getSoapboxData($slug)
+    {
+        $query = DB::table('users')
+            ->select(
+                DB::raw('count(users.id) as user_count'),
+                'soapboxes.slug',
+                'soapboxes.name',
+                'soapboxes.domain',
+                DB::raw("(SELECT count(users.id) FROM users
+                WHERE users.is_deferred = 1
+                AND users.deactivated_at IS NULL
+                AND users.deleted_at IS NULL
+                AND users.soapbox_id = soapboxes.id) as deferred_count"),
+                DB::raw("(SELECT count(users.id) FROM users
+                WHERE users.deactivated_at IS NOT NULL
+                AND users.soapbox_id = soapboxes.id) as deactivated_count"),
+            )
+            ->join('soapboxes', 'soapboxes.id', '=', 'users.soapbox_id')
+            ->whereNull('users.deactivated_at')
+            ->whereNull('users.deleted_at')
+            ->where('users.is_deferred', '=', 0)
+            ->where('soapboxes.slug', '=', $slug)
+            ->groupBy('soapboxes.id')
+            ->orderBy('user_count');
 
-        $result = $this->database->select($sql, [$slug]);
-
-        if(count($result) > 0)
-            return $result[0];
-        else
-            return $result;
+        return $query->get()->first();
     }
 
     public function getUsers($slug) {
