@@ -1,10 +1,7 @@
 <?php
 
-const UNKNOWN_ERROR = 520;
-
 function http_code_by_exception_type(\Exception $e)
 {
-
 	if ($e instanceof GuzzleHttp\Exception\ConnectException) {
 		return Illuminate\Http\Response::HTTP_BAD_GATEWAY;
 	}
@@ -21,5 +18,5 @@ function http_code_by_exception_type(\Exception $e)
 		return Illuminate\Http\Response::HTTP_BAD_REQUEST;
 	}
 
-	return UNKNOWN_ERROR;
+	return $e->getCode();
 }

@@ -1,11 +1,10 @@
 <?php
 
 use GuzzleHttp\Client;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Libraries\FirebaseJWTLibrary;
 use Illuminate\Support\Facades\Cache;
-use App\Http\Controllers\AuthController;
+use App\Collaborators\Adapters\GuzzleAdapter;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 
 class AuthLoginTest extends TestCase
@@ -101,20 +100,20 @@ class AuthLoginTest extends TestCase
 	public function assertCanLogInWithSoapboxSlug()
     {
         //Guzzle mock
-        $client = Mockery::mock(Client::class);
+        $client = Mockery::mock(new Client());
         $response = new GuzzleResponse(Response::HTTP_OK, [], json_encode(['token' => $this->test_token]));
         $client->shouldReceive('request')->andReturn($response);
 
-        $request = Request::create('/login', 'POST');
-        $request->merge([
-            'oauth_code' => 'ya29.Il-pBx5aS_JhAMwcBo5Ip_cWZ9W19TEYzRKlcLLqZkN4PaFEnrl24y8tXldBR-pPtWxKnwHKa8cpSsuxJXyW2OngfTwVS5G6HKe-KI3pXlP_3C0UdR1XRhYv1ebVwK-fgA',
-            'provider' => $this->driver,
-            'soapbox-slug' => 'test_slug'
+        //GuzzleAdapter mock
+        $adapter = Mockery::mock(new GuzzleAdapter($client));
+        $response = $adapter->request("POST", config('env.dev.login_url') . '/' . $this->driver, [
+            "form_params" => [
+                'code' => $this->test_oauth_code,
+                'soapbox-slug' => 'test_slug'
+            ]
         ]);
 
-        $controller = new AuthController(new FirebaseJWTLibrary(), $client);
-        $response = $controller->login($request);
-        $token = $response->getContent();
+        $token = $response->getBody()->getContents();
         $token = json_decode($token);
 
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());

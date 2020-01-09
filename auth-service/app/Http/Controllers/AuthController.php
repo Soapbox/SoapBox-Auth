@@ -3,22 +3,21 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use App\Libraries\iJWTLibrary;
 use Illuminate\Http\Response;
+use App\Libraries\iJWTLibrary;
 use Illuminate\Support\Facades\Cache;
 use App\Services\TokenGeneratorService;
 
 class AuthController extends Controller
 {
-    private $client;
+    private $apiClient;
     private $token_service;
 
-	public function __construct(iJWTLibrary $library, Client $client)
+	public function __construct(iJWTLibrary $library)
 	{
 		$this->token_service = new TokenGeneratorService($library);
-		$this->client = $client;
+		$this->apiClient = app()->make('api-client');
 	}
 
     /**
@@ -42,7 +41,7 @@ class AuthController extends Controller
 			]);
 
             if ($request->has('soapbox-slug')) {
-                $response = $this->client->request(
+                $response = $this->apiClient->request(
                     'POST',
                     config('env.dev.login_url') . '/' . $request->get('provider'),
                     [
@@ -52,8 +51,8 @@ class AuthController extends Controller
                         ]
                     ]
                 );
-                $contents = json_decode($response->getBody()->getContents());
-                $token = $contents->token;
+
+                $token = $response->getContents();
             }
 
 			if ($token) {
