@@ -13,12 +13,14 @@ class AuthLoginTest extends TestCase
 	protected $test_oauth_code = "ya29.Il-pBx5aS_JhAMwcBo5Ip_cWZ9W19TEYzRKlcLLqZkN4PaFEnrl24y8tXldBR-pPtWxKnwHKa8cpSsuxJXyW2OngfTwVS5G6HKe-KI3pXlP_3C0UdR1XRhYv1ebVwK-fgA";
 	protected $abstractUser;
 	protected $provider;
-    protected $test_token = "ya29.Il-pBx5aS_JhAMwcBo5Ip_cWZ9W19TEYzRKlcLLqZkN4PaFEnrl24y8tXldBR-pPtWxKnwHKa8cpSsuxJXyW2OngfTwVS5G6HKe-KI3pXlP_3C0UdR1XRhYv1ebVwK-fgA";
+	protected $test_token = "ya29.Il-pBx5aS_JhAMwcBo5Ip_cWZ9W19TEYzRKlcLLqZkN4PaFEnrl24y8tXldBR-pPtWxKnwHKa8cpSsuxJXyW2OngfTwVS5G6HKe-KI3pXlP_3C0UdR1XRhYv1ebVwK-fgA";
 
-    public function testValidations()
+	public function testValidations()
 	{
 		$this->json(
-			'POST', '/login', [
+			'POST',
+			'/login',
+			[
 				'oauth_code' => '',
 				'provider' => '',
 			]
@@ -39,7 +41,9 @@ class AuthLoginTest extends TestCase
 		$example = ['gogle', 'slck', 'micrsoft', 'unsupported']; //typos or more generic
 
 		$this->json(
-			'POST', '/login', [
+			'POST',
+			'/login',
+			[
 				'oauth_code' => $this->test_oauth_code,
 				'provider' => $example[array_rand($example, 1)],
 			]
@@ -99,25 +103,26 @@ class AuthLoginTest extends TestCase
 	}
 
 	public function assertCanLogInWithSoapboxSlug()
-    {
-        //Guzzle mock
-        $client = Mockery::mock(Client::class);
-        $response = new GuzzleResponse(Response::HTTP_OK, [], json_encode(['token' => $this->test_token]));
-        $client->shouldReceive('request')->andReturn($response);
+	{
+		//Guzzle mock
+		$client = Mockery::mock(Client::class);
+		$response = new GuzzleResponse(Response::HTTP_OK, [], json_encode(['token' => $this->test_token]));
+		$client->shouldReceive('request')->andReturn($response);
 
-        $request = Request::create('/login', 'POST');
-        $request->merge([
-            'oauth_code' => 'ya29.Il-pBx5aS_JhAMwcBo5Ip_cWZ9W19TEYzRKlcLLqZkN4PaFEnrl24y8tXldBR-pPtWxKnwHKa8cpSsuxJXyW2OngfTwVS5G6HKe-KI3pXlP_3C0UdR1XRhYv1ebVwK-fgA',
-            'provider' => $this->driver,
-            'soapbox-slug' => 'test_slug'
-        ]);
+		$request = Request::create('/login', 'POST');
+		$request->merge([
+			'oauth_code' => 'ya29.Il-pBx5aS_JhAMwcBo5Ip_cWZ9W19TEYzRKlcLLqZkN4PaFEnrl24y8tXldBR-pPtWxKnwHKa8cpSsuxJXyW2OngfTwVS5G6HKe-KI3pXlP_3C0UdR1XRhYv1ebVwK-fgA',
+			'provider' => $this->driver,
+			'soapbox-slug' => 'test_slug',
+			'redirectUri' => 'http://app.soapboxdev.com:4200'
+		]);
 
-        $controller = new AuthController(new FirebaseJWTLibrary(), $client);
-        $response = $controller->login($request);
-        $token = $response->getContent();
-        $token = json_decode($token);
+		$controller = new AuthController(new FirebaseJWTLibrary(), $client);
+		$response = $controller->login($request);
+		$token = $response->getContent();
+		$token = json_decode($token);
 
-        $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertSame($token->token, $this->test_token);
-    }
+		$this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
+		$this->assertSame($token->token, $this->test_token);
+	}
 }

@@ -72,9 +72,10 @@
     <div class="content">
         <div class="title">
             Soapbox Dashboard
-            <a href="logout">
-                <p class="tiny">Logout</p>
-            </a>
+            <p class="tiny">
+                <a href="logout">Logout</a>
+            </p>
+
         </div>
 
         <div>
