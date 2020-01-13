@@ -34,5 +34,7 @@
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="SESSION_DRIVER" value="array"/>
         <server name="APP_KEY" value="nqqnj9x35utbubdk53hx2ninyey8e9dk"/>
+        <server name="GOOGLE_REDIRECT_URI" value="https://dashboard.services.soapboxdev.com"/>
+        <server name="GOOGLE_SCOPE" value="email profile https://www.googleapis.com/auth/calendar"/>
     </php>
 </phpunit>
