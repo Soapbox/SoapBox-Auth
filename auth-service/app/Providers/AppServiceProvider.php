@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use GuzzleHttp\Client;
+use App\Collaborators\ApiClient;
 use Illuminate\Support\ServiceProvider;
+use App\Collaborators\Adapters\GuzzleAdapter;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -17,5 +20,12 @@ class AppServiceProvider extends ServiceProvider
 			'App\Libraries\iJWTLibrary',
 			'App\Libraries\FirebaseJWTLibrary'
 		);
+
+		$this->app->bind(
+		    'api-client',
+            function () {
+		        return new ApiClient(new GuzzleAdapter(new Client()));
+            }
+        );
 	}
 }
