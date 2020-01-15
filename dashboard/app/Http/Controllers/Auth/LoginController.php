@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
+use GuzzleHttp\Exception\ClientException;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class LoginController extends Controller
@@ -39,31 +40,37 @@ class LoginController extends Controller
     {
         // validations. To be migrated...
         $status = $request->validate([
-            "oauth_code"    => "required",
-            "provider"      => "required",
-            "redirectUri"   => "required|url",
-            "soapbox-slug"  => "required"
+            "oauth_code" => "required",
+            "provider" => "required",
+            "redirectUri" => "required|url",
+            "soapbox-slug" => "required"
         ]);
 
         $client = $client ? $client : new Client();
 
-        $params = $request->all();
+        try {
+            $params = $request->all();
 
-        $response = $client->request(
-            'POST',
-            env('API_URL') . '/auth/login',
-            [
-                'form_params' => $params
-            ]
-        );
-        $contents = json_decode($response->getBody()->getContents());
+            $response = $client->request(
+                'POST',
+                env('API_URL') . '/auth/login',
+                [
+                    'form_params' => $params
+                ]
+            );
+            $contents = json_decode($response->getBody()->getContents());
 
-        if (isset($contents->token)) {
-            $token = $contents->token;
-            session(["jwt" => $token]);
-            return redirect('app');
-        } else {
-            return $this->handleErrorRedirect("A problem happened during login");
+            if (isset($contents->token)) {
+                $token = $contents->token;
+                session(["jwt" => $token]);
+                return redirect('app');
+            } else {
+                return $this->handleErrorRedirect(
+                    "A problem happened during login"
+                );
+            }
+        } catch (ClientException $e) {
+            return $this->handleErrorRedirect($e->getMessage());
         }
     }
 

@@ -2,13 +2,14 @@ var Google = {
     user: {},
     init: () => {
         var params = new URL(document.location).searchParams;
+        var timeDiff = new Date().getTime() - params.get("state");
 
-        if (
-            params.get("code") &&
-            params.get("state") &&
-            new Date().getTime() - params.get("state") < 60000
-        ) {
+        if (params.get("code") && params.get("state") && timeDiff < 3600000) {
             Google.continueAuth(params);
+            setTimeout(
+                Google.createAuthURL,
+                3600000 - timeDiff > 0 ? 3600000 - timeDiff : 3600000
+            );
         } else {
             Google.createAuthURL();
         }
@@ -23,8 +24,14 @@ var Google = {
         Google.complete();
     },
     createAuthURL: () => {
+        Google.clearURL();
         var href = `/google-login`;
         $("#login-with-google").attr("href", href);
+        $("#google-login-verb").html("Login");
+        $("#login-with-google").unbind("click");
+    },
+    clearURL: () => {
+        window.history.pushState({}, document.title, "/");
     },
     complete: () => {
         $("#collapseTwo").collapse("show");
