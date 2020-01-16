@@ -6,10 +6,6 @@ var Google = {
 
         if (params.get("code") && params.get("state") && timeDiff < 3600000) {
             Google.continueAuth(params);
-            setTimeout(
-                Google.createAuthURL,
-                3600000 - timeDiff > 0 ? 3600000 - timeDiff : 3600000
-            );
         } else {
             Google.createAuthURL();
         }
@@ -24,7 +20,6 @@ var Google = {
         Google.complete();
     },
     createAuthURL: () => {
-        Google.clearURL();
         var href = `/google-login`;
         $("#login-with-google").attr("href", href);
         $("#google-login-verb").html("Login");
@@ -34,6 +29,7 @@ var Google = {
         window.history.pushState({}, document.title, "/");
     },
     complete: () => {
+        Google.clearURL();
         $("#collapseTwo").collapse("show");
         Login.provider = "google";
         Login.access_token = Google.user.code;

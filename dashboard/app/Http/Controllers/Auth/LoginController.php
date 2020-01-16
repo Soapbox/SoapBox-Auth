@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
 use GuzzleHttp\Exception\ClientException;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
@@ -17,17 +16,9 @@ class LoginController extends Controller
     |--------------------------------------------------------------------------
     |
     | This controller handles authenticating users for the application and
-    | redirecting them to your home screen. The controller uses a trait
-    | to conveniently provide its functionality to your applications.
+    | redirecting them to your home screen.
     |
     */
-
-    /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
      * This method logs the user out by removing the jwt from the session and redirecting to the home page
@@ -88,9 +79,9 @@ class LoginController extends Controller
     }
 
     /**
-     * this method handles exceptions received when request forwarding is attempted
+     * this method handles redirections to the login page when an error occurs
      *
-     * @param \Exception  $e
+     * @param string $message
      * @return \Symfony\Component\HttpFoundation\Response
      */
     private function handleErrorRedirect($message): SymfonyResponse
