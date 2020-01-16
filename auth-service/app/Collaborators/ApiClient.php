@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Collaborators;
 
 use Illuminate\Http\Response;
@@ -22,7 +21,10 @@ class ApiClient
         $params = [];
 
         if (!in_array($method, $this->allowed_methods)) {
-            throw new MethodNotAllowedException("Method not allowed.", Response::HTTP_METHOD_NOT_ALLOWED);
+            throw new MethodNotAllowedException(
+                "Method not allowed.",
+                Response::HTTP_METHOD_NOT_ALLOWED
+            );
         }
 
         if (array_key_exists('form_params', $options)) {

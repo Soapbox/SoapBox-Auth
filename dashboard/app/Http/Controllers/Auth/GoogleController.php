@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use League\OAuth2\Client\Provider\Google;
+use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class GoogleController extends Controller
 {
@@ -20,19 +21,19 @@ class GoogleController extends Controller
 
     /**
      * This method makes the oauth call to Google to get the authorization code
-     * 
+     *
      * @param \Illuminate\Http\Request $request
-     * 
+     * @return \Symfony\Component\HttpFoundation\Response|void
      */
     public function login(Request $request)
     {
         $provider = new Google([
-            'clientId'     => env("GOOGLE_KEY"),
+            'clientId' => env("GOOGLE_KEY"),
             'clientSecret' => env("GOOGLE_SECRET"),
-            'redirectUri'  => env("GOOGLE_REDIRECT_URI"),
-            'scopes'       => explode(env("GOOGLE_SCOPE"), " "),
-            'access_type'  => "offline",
-            'hostedDomain' => 'soapboxhq.com',
+            'redirectUri' => env("GOOGLE_REDIRECT_URI"),
+            'scopes' => explode(env("GOOGLE_SCOPE"), " "),
+            'access_type' => "offline",
+            'hostedDomain' => 'soapboxhq.com'
         ]);
 
         if ($request->error) {

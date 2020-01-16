@@ -29,14 +29,27 @@ class LoginController extends Controller
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
-    public function logout()
+    /**
+     * This method logs the user out by removing the jwt from the session and redirecting to the home page
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function logout(): SymfonyResponse
     {
         session()->forget('jwt');
 
         return redirect('/');
     }
 
-    public function login(Request $request, Client $client)
+    /**
+     * This method calls the auth server for login with the oauth_code and redirect uri
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \GuzzleHttp\Client $client
+     *
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function login(Request $request, Client $client): SymfonyResponse
     {
         // validations. To be migrated...
         $status = $request->validate([

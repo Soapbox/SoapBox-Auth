@@ -51,7 +51,7 @@ class AuthController extends Controller
                     ]
                 );
 
-                $token = $response->getContents();
+                $token = $response->getContents()->token;
             } else {
                 $token = $this->token_service->generateToken([
                     'provider' => $request->get('provider'),

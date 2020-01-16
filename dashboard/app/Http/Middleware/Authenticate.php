@@ -3,8 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use \Firebase\JWT\JWT;
-use \Firebase\JWT\ExpiredException;
+use Firebase\JWT\JWT;
+use Firebase\JWT\ExpiredException;
 
 class Authenticate
 {
@@ -39,7 +39,7 @@ class Authenticate
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
-     * @return string|null
+     * @return mixed
      */
     protected function redirectTo($request, $next)
     {
