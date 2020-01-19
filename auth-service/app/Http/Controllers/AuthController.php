@@ -27,7 +27,7 @@ class AuthController extends Controller
      * @throws \Illuminate\Validation\ValidationException
      * @throws \GuzzleHttp\Exception\GuzzleException
      */
-    public function login(Request $request)
+    public function login(Request $request): Response
     {
         $this->validate($request, [
             'oauth_code' => 'required|string',
@@ -37,18 +37,13 @@ class AuthController extends Controller
 
         try {
             if ($request->has('soapbox-slug')) {
-                $response = $this->apiClient->request(
-                    'POST',
-                    config('env.dev.login_url') .
-                        '/' .
-                        $request->get('provider'),
-                    [
-                        'form_params' => [
-                            'code' => $request->get('oauth_code'),
-                            'soapbox-slug' => $request->get('soapbox-slug')
-                        ]
+                $response = $this->apiClient->post($request->get('provider'), [
+                    'form_params' => [
+                        'code' => $request->get('oauth_code'),
+                        'soapbox-slug' => $request->get('soapbox-slug'),
+                        'redirectUri' => $request->get('redirectUri')
                     ]
-                );
+                ]);
 
                 $token = $response->getContents()->token;
             } else {
@@ -83,7 +78,12 @@ class AuthController extends Controller
         }
     }
 
-    public function logout(Request $request)
+    /**
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function logout(Request $request): Response
     {
         $token = $request->bearerToken();
 

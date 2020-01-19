@@ -1,8 +1,7 @@
 <?php
 
-
 return [
     "dev" => [
-        "login_url" => env("DEV_API_LOGIN_ROUTE"),
+        "login_url" => env("API_LOGIN_URL")
     ]
 ];
