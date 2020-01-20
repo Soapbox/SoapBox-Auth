@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Carbon\Carbon;
-use App\Charts\LineChart;
 use Illuminate\Http\Request;
 use App\Metrics\SoapboxDataReporter;
 use App\Http\Services\DashboardService;
@@ -73,11 +72,7 @@ class DashboardController extends Controller
         //get $DURATION days in dates
         $startDate = Carbon::now()->subDays($DURATION);
         $endDate = Carbon::now();
-        $all_dates = array();
-        while ($startDate->lte($endDate)) {
-            $all_dates[] = $startDate->toDateString();
-            $startDate->addDay();
-        }
+        $all_dates = $this->dashboardService->getAllDates($startDate, $endDate);
 
         $averageCloseRatioCompany = $this->dataReporter->getAverageCloseRatio(
             $slug,

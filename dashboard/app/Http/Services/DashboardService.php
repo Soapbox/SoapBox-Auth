@@ -14,6 +14,16 @@ class DashboardService
         $this->dataReporter = app(SoapboxDataReporter::class);
     }
 
+    public function getAllDates($startDate, $endDate)
+    {
+        $all_dates = array();
+        while ($startDate->lte($endDate)) {
+            $all_dates[] = $startDate->toDateString();
+            $startDate->addDay();
+        }
+        return $all_dates;
+    }
+
     public function getMeetingRatingBenchmarkChart(
         $all_dates,
         $averageMeetingRatingData
@@ -24,7 +34,7 @@ class DashboardService
         $meetingRatingBenchmarkChart
             ->dataset('Company', 'line', $averageMeetingRatingData['Company'])
             ->color('#108cff')
-            ->fill(false)
+            ->fill(true)
             ->lineTension(0.4)
             ->options([
                 'pointRadius' => 0
@@ -32,7 +42,7 @@ class DashboardService
         $meetingRatingBenchmarkChart
             ->dataset('Industry', 'line', $averageMeetingRatingData['Industry'])
             ->color('#ffc854')
-            ->fill(false)
+            ->fill(true)
             ->lineTension(0.4)
             ->options([
                 'pointRadius' => 0
@@ -44,7 +54,7 @@ class DashboardService
                 $averageMeetingRatingData['Benchmark']
             )
             ->color('#c1c1ce')
-            ->fill(false)
+            ->fill(true)
             ->dashed([10])
             ->options([
                 'pointRadius' => 0
@@ -63,7 +73,7 @@ class DashboardService
         $closeRatioBenchmarkChart
             ->dataset('Company', 'line', $averageCloseRatioData['Company'])
             ->color('#108cff')
-            ->fill(false)
+            ->fill(true)
             ->lineTension(0.4)
             ->options([
                 'pointRadius' => 0
@@ -71,7 +81,7 @@ class DashboardService
         $closeRatioBenchmarkChart
             ->dataset('Industry', 'line', $averageCloseRatioData['Industry'])
             ->color('#ffc854')
-            ->fill(false)
+            ->fill(true)
             ->lineTension(0.4)
             ->options([
                 'pointRadius' => 0
@@ -79,7 +89,7 @@ class DashboardService
         $closeRatioBenchmarkChart
             ->dataset('Benchmark', 'line', $averageCloseRatioData['Benchmark'])
             ->color('#c1c1ce')
-            ->fill(false)
+            ->fill(true)
             ->dashed([10])
             ->options([
                 'pointRadius' => 0
@@ -131,7 +141,7 @@ class DashboardService
         $meetingRatingChart
             ->dataset('Team', 'line', $averageMeetingRatingData['Company'])
             ->color('#25ecad')
-            ->fill(false)
+            ->fill(true)
             ->lineTension(0.4)
             ->options([
                 'pointRadius' => 0,
@@ -187,7 +197,7 @@ class DashboardService
         $closeRatioChart
             ->dataset('Team', 'line', $averageCloseRatioData['Company'])
             ->color('#25ecad')
-            ->fill(false)
+            ->fill(true)
             ->lineTension(0.4)
             ->options([
                 'pointRadius' => 0,
@@ -203,8 +213,7 @@ class DashboardService
         $users_not_having_meetings = $this->dataReporter->getWhoIsntHavingMeetings(
             $slug,
             'one-on-one',
-            $DURATION,
-            7
+            $DURATION
         );
 
         return array_slice($users_not_having_meetings, 0, 5);

@@ -113,7 +113,7 @@ Dashboard - {{ $slug }}
 <div class="row">
     <div class="col">
         <!-- Tab Toggle #1 -->
-        <div data-tab="big-chart-closer" class="tab-active tab-toggle__big-chart shadow-lg p-3 mb-4 bg-white rounded">
+        <div data-tab="big-chart-closer" class="tab-toggle__big-chart shadow-lg p-3 mb-4 bg-white rounded">
             <div class="mini-chart">
                 <div class="mini-chart__heading text-center pb-2 pt-4 h6">
                     <div class="h3">{{ $closeRatioScore }}</div>
@@ -187,65 +187,88 @@ Dashboard - {{ $slug }}
 --}}
 </div>
 
+<div class=row>
+    <div class="col">
+        <ul class="nav nav-pills nav-fill bg-white">
+            <li class="nav-item">
+                <a class="nav-link active" id="closer-tab" data-toggle="tab" href="#big-chart-closer" role="tab" aria-controls="big-chart-closer" aria-selected="true">Close Ratio</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="rater-tab" data-toggle="tab" href="#big-chart-rater" role="tab" aria-controls="big-chart-rater" aria-selected="false">Meeting Rating</a>
+            </li>
+            <!-- <li class="nav-item">
+                <a class="nav-link" id="discussions-tab" data-toggle="tab" href="#big-chart-balance" role="tab" aria-controls="big-chart-balance" aria-selected="false">Discussions</a>
+            </li> -->
+        </ul>
+    </div>
+</div>
+
 <div class="row">
     <div class="col">
         <!-- Tab #1 -->
-        <div id="big-chart-closer" class="d-block tab-content__big-chart shadow-lg p-3 pt-4 mb-3 bg-white rounded">
-            <h5>Avg. Close Ratio &mdash; Your team vs. benchmarks</h5>
-            <p class="text-secondary small">Your team is up...</p>
-            <div class="big-chart">
-                <div class="big-chart__graph mb-3">
-                    {!! $closeRatioBenchmarkChart->container() !!}
-                </div>
-                <div class="big-chart__value h2 text-right">
-                    <span class="@if($closeRatioPercentageChange < -10) text-danger @elseif($closeRatioPercentageChange < 1) text-warning @else text-success @endif h6">@if($closeRatioPercentageChange < 0) &darr; @elseif($closeRatioPercentageChange> 0) &uarr; @endif {{ sprintf("%.0f%%", $closeRatioPercentageChange) }}</span>
-                    {{ $closeRatioScore }}
-                </div>
-                <div class="big-chart__legend small text-muted">
-                    <span style="display: inline-block;width:10px;height:10px;border-radius: 50%;margin:0 2px 0 10px;background: #41a3fe;"></span> Company
-                    <span style="display: inline-block;width:10px;height:10px;border-radius: 50%;margin:0 2px 0 10px;background: #fdd176;"></span> Industry
-                    <span style="display: inline-block;width:10px;height:10px;border-radius: 50%;margin:0 2px 0 10px;background: #c3c0d0;"></span> Benchmark
-                </div>
-            </div>
-        </div>
-        <!-- Tab #2 -->
-        <div id="big-chart-rater" class="d-none tab-content__big-chart shadow-lg p-3 pt-4 mb-3 bg-white rounded">
-            <h5>Avg. Meeting Rating &mdash; Your team vs. benchmarks</h5>
-            <p class="text-secondary small">Your team is up...</p>
-            <div class="big-chart">
-                <div class="big-chart__graph mb-3">
-                    {!! $meetingRatingBenchmarkChart->container() !!}
-                </div>
-                <div class="big-chart__value h2 text-right">
-                    <span class="@if($meetingRatingPercentageChange < -10) text-danger @elseif($meetingRatingPercentageChange < 1) text-warning @else text-success @endif h6">@if($meetingRatingPercentageChange < 0) &darr; @elseif($meetingRatingPercentageChange> 0) &uarr; @endif {{ sprintf("%.0f%%", $meetingRatingPercentageChange) }}</span>
-                    {{ $meetingRatingScore }}
-                </div>
-                <div class="big-chart__legend small text-muted">
-                    <span style="display: inline-block;width:10px;height:10px;border-radius: 50%;margin:0 2px 0 10px;background: #41a3fe;"></span> Company
-                    <span style="display: inline-block;width:10px;height:10px;border-radius: 50%;margin:0 2px 0 10px;background: #fdd176;"></span> Industry
-                    <span style="display: inline-block;width:10px;height:10px;border-radius: 50%;margin:0 2px 0 10px;background: #c3c0d0;"></span> Benchmark
+        <div class="tab-content">
+            <div class="tab-pane active" id="big-chart-closer" role="tabpanel" aria-labelledby="closer-tab">
+                <div id="big-chart-closer" class="d-block tab-content__big-chart shadow-lg p-3 pt-4 mb-3 bg-white rounded">
+                    <h5>Avg. Close Ratio &mdash; Your team vs. benchmarks</h5>
+                    <p class="text-secondary small">Your team is up...</p>
+                    <div class="big-chart">
+                        <div class="big-chart__graph mb-3">
+                            {!! $closeRatioBenchmarkChart->container() !!}
+                        </div>
+                        <div class="big-chart__value h2 text-right">
+                            <span class="@if($closeRatioPercentageChange < -10) text-danger @elseif($closeRatioPercentageChange < 1) text-warning @else text-success @endif h6">@if($closeRatioPercentageChange < 0) &darr; @elseif($closeRatioPercentageChange> 0) &uarr; @endif {{ sprintf("%.0f%%", $closeRatioPercentageChange) }}</span>
+                            {{ $closeRatioScore }}
+                        </div>
+                        <div class="big-chart__legend small text-muted">
+                            <span style="display: inline-block;width:10px;height:10px;border-radius: 50%;margin:0 2px 0 10px;background: #41a3fe;"></span> Company
+                            <span style="display: inline-block;width:10px;height:10px;border-radius: 50%;margin:0 2px 0 10px;background: #fdd176;"></span> Industry
+                            <span style="display: inline-block;width:10px;height:10px;border-radius: 50%;margin:0 2px 0 10px;background: #c3c0d0;"></span> Benchmark
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Tab #3 -->
-        <div id="big-chart-balance" class="d-none tab-content__big-chart shadow-lg p-3 pt-4 mb-3 bg-white rounded">
-            <h5>Discussion Balance &mdash; Your team vs. benchmarks</h5>
-            <p class="text-secondary small">Your team is up...</p>
-            <div class="big-chart">
-                <div class="big-chart__graph mb-3">
-                    <!-- Replace this shit with your cool chart -->
-                    <div style="width:100%;height:300px;background:#cbe2ff;"></div>
-                    <!-- / Replace this shit with your cool chart -->
+            <div class="tab-pane" id="big-chart-rater" role="tabpanel" aria-labelledby="rater-tab">
+                <!-- Tab #2 -->
+                <div id="big-chart-rater" class="tab-content__big-chart shadow-lg p-3 pt-4 mb-3 bg-white rounded">
+                    <h5>Avg. Meeting Rating &mdash; Your team vs. benchmarks</h5>
+                    <p class="text-secondary small">Your team is up...</p>
+                    <div class="big-chart">
+                        <div class="big-chart__graph mb-3">
+                            {!! $meetingRatingBenchmarkChart->container() !!}
+                        </div>
+                        <div class="big-chart__value h2 text-right">
+                            <span class="@if($meetingRatingPercentageChange < -10) text-danger @elseif($meetingRatingPercentageChange < 1) text-warning @else text-success @endif h6">@if($meetingRatingPercentageChange < 0) &darr; @elseif($meetingRatingPercentageChange> 0) &uarr; @endif {{ sprintf("%.0f%%", $meetingRatingPercentageChange) }}</span>
+                            {{ $meetingRatingScore }}
+                        </div>
+                        <div class="big-chart__legend small text-muted">
+                            <span style="display: inline-block;width:10px;height:10px;border-radius: 50%;margin:0 2px 0 10px;background: #41a3fe;"></span> Company
+                            <span style="display: inline-block;width:10px;height:10px;border-radius: 50%;margin:0 2px 0 10px;background: #fdd176;"></span> Industry
+                            <span style="display: inline-block;width:10px;height:10px;border-radius: 50%;margin:0 2px 0 10px;background: #c3c0d0;"></span> Benchmark
+                        </div>
+                    </div>
                 </div>
-                <div class="big-chart__value h2 text-right">
-                    <span class="text-success h6">&uarr; 66%</span>
-                    76%
-                </div>
-                <div class="big-chart__legend small text-muted">
-                    <span style="display: inline-block;width:10px;height:10px;border-radius: 50%;margin:0 2px 0 10px;background: #41a3fe;"></span> Your Team
-                    <span style="display: inline-block;width:10px;height:10px;border-radius: 50%;margin:0 2px 0 10px;background: #fdd176;"></span> Your Company
-                    <span style="display: inline-block;width:10px;height:10px;border-radius: 50%;margin:0 2px 0 10px;background: #c3c0d0;"></span> Industry
+            </div>
+            <div class="tab-pane" id="big-chart-balance" role="tabpanel" aria-labelledby="messages-tab">
+                <!-- Tab #3 -->
+                <div id="big-chart-balance" class="tab-content__big-chart shadow-lg p-3 pt-4 mb-3 bg-white rounded">
+                    <h5>Discussion Balance &mdash; Your team vs. benchmarks</h5>
+                    <p class="text-secondary small">Your team is up...</p>
+                    <div class="big-chart">
+                        <div class="big-chart__graph mb-3">
+                            <!-- Replace this shit with your cool chart -->
+                            <div style="width:100%;height:300px;background:#cbe2ff;"></div>
+                            <!-- / Replace this shit with your cool chart -->
+                        </div>
+                        <div class="big-chart__value h2 text-right">
+                            <span class="text-success h6">&uarr; 66%</span>
+                            76%
+                        </div>
+                        <div class="big-chart__legend small text-muted">
+                            <span style="display: inline-block;width:10px;height:10px;border-radius: 50%;margin:0 2px 0 10px;background: #41a3fe;"></span> Your Team
+                            <span style="display: inline-block;width:10px;height:10px;border-radius: 50%;margin:0 2px 0 10px;background: #fdd176;"></span> Your Company
+                            <span style="display: inline-block;width:10px;height:10px;border-radius: 50%;margin:0 2px 0 10px;background: #c3c0d0;"></span> Industry
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -454,7 +477,7 @@ Dashboard - {{ $slug }}
 
 <div class="shadow-lg p-4 mb-3 bg-white rounded">
     <h2 class="mb-4">Your Team</h2>
-    <table class="table" style="">
+    <table class="table">
         <thead>
             <tr>
                 <th scope="col" class="text-muted">Name</th>
@@ -573,19 +596,6 @@ Dashboard - {{ $slug }}
 
 @section('scripts')
 @parent
-<script>
-    $(function() {
-        $('.tab-toggle__big-chart').on('click', function() {
-            $('.tab-toggle__big-chart').removeClass('tab-active');
-            $('.tab-content__big-chart').removeClass('d-block').addClass('d-none');
-            $(this).addClass('tab-active');
-
-            var showTabId = $(this).attr('data-tab');
-
-            $('#' + showTabId).removeClass('d-none').addClass('d-block');
-        });
-    });
-</script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js" charset="utf-8"></script>
 {!! $closeRatioChart->script() !!}
