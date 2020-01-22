@@ -20,10 +20,6 @@ Route::group(['middleware' => 'auth'], function () {
         "uses" => "DashboardController@show"
     ]);
 
-    Route::get('app/{slug}', [
-        "uses" => "DashboardController@showForSlug"
-    ]);
-
     Route::get('logout', [
         "uses" => "Auth\LoginController@logout"
     ]);
