@@ -11,6 +11,11 @@ use App\Exceptions\InvalidFileCountException;
 class DownloadDatabase extends Command
 {
     /**
+     * @var string
+     */
+    private $backupFile = 'dbbackup.zip';
+
+    /**
      * The name and signature of the console command.
      *
      * @var string
@@ -41,6 +46,10 @@ class DownloadDatabase extends Command
      */
     public function handle()
     {
+        if (file_exists(storage_path('app/' . $this->backupFile))) {
+            unlink(storage_path('app/' . $this->backupFile));
+        }
+
         $date = Carbon::now()->format('Y-m-d');
 
         try {
@@ -56,7 +65,7 @@ class DownloadDatabase extends Command
         if (count($files) == 1) {
             $s3File = Storage::disk('s3')->get($files[0]);
             $localStorage = Storage::disk('local');
-            $localStorage->put('testFile2', $s3File);
+            $localStorage->put($this->backupFile, $s3File);
         } else {
             throw new InvalidFileCountException('Expected 1 file, found ' . count($files));
         }
