@@ -9,23 +9,20 @@ use App\Collaborators\Adapters\GuzzleAdapter;
 
 class AppServiceProvider extends ServiceProvider
 {
-	/**
-	 * Register any application services.
-	 *
-	 * @return void
-	 */
-	public function register()
-	{
-		$this->app->bind(
-			'App\Libraries\iJWTLibrary',
-			'App\Libraries\FirebaseJWTLibrary'
-		);
-
-		$this->app->bind(
-		    'api-client',
-            function () {
-		        return new ApiClient(new GuzzleAdapter(new Client()));
-            }
+    /**
+     * Register any application services.
+     *
+     * @return void
+     */
+    public function register()
+    {
+        $this->app->bind(
+            'App\Libraries\iJWTLibrary',
+            'App\Libraries\FirebaseJWTLibrary'
         );
-	}
+
+        $this->app->bind('api-client', function ($app) {
+            return new ApiClient(new GuzzleAdapter($app->make(Client::class)));
+        });
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Collaborators;
 use Illuminate\Http\Response;
 use App\Collaborators\Contracts\iClient;
 use App\Exceptions\MethodNotAllowedException;
+use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use stdClass;
 
 class ApiClient
@@ -13,6 +14,8 @@ class ApiClient
      * @var App\Collaborators\Contracts\iClient
      */
     private $client;
+
+    private $base_url;
 
     /**
      * @var array
@@ -27,6 +30,7 @@ class ApiClient
     public function __construct(iClient $client)
     {
         $this->client = $client;
+        $this->base_url = config('env.dev.login_url');
     }
 
     /**
@@ -36,12 +40,13 @@ class ApiClient
      * @param string $uri
      * @param array $options
      *
-     * @return \App\Collaborators\ApiClient
+     * @return \GuzzleHttp\Psr7\Response
      */
-    private function request($method, $uri = '', array $options = []): ApiClient
-    {
-        $params = [];
-
+    private function request(
+        string $method,
+        string $uri = '',
+        array $options = []
+    ): GuzzleResponse {
         if (!in_array($method, $this->allowed_methods)) {
             throw new MethodNotAllowedException(
                 "Method not allowed.",
@@ -49,13 +54,9 @@ class ApiClient
             );
         }
 
-        if (array_key_exists('form_params', $options)) {
-            $params["form_params"] = $options['form_params'];
-        }
+        $response = $this->client->request($method, $uri, $options);
 
-        $this->client->request($method, $uri, $params);
-
-        return $this;
+        return $response;
     }
 
     /**
@@ -64,58 +65,17 @@ class ApiClient
      * @param string $provider
      * @param array $options
      *
-     * @return \App\Collaborators\ApiClient
+     * @return \GuzzleHttp\Psr7\Response
      */
-    public function post($provider, $options): ApiClient
+    public function post(string $path, array $options): GuzzleResponse
     {
-        $uri = config('env.dev.login_url') . "/$provider";
+        $uri = $this->base_url . "/$path";
+
+        $options = [
+            "json" => $options
+        ];
 
         return $this->request("POST", $uri, $options);
-    }
-
-    /**
-     * Helper method to make get requests
-     *
-     * @param string $provider
-     * @param array $options
-     *
-     * @return \App\Collaborators\ApiClient
-     */
-    public function get($provider, $options): ApiClient
-    {
-        $uri = config('env.dev.login_url') . "/$provider";
-
-        return $this->request("GET", $uri, $options);
-    }
-
-    /**
-     * Helper method to make put requests
-     *
-     * @param string $provider
-     * @param array $options
-     *
-     * @return \App\Collaborators\ApiClient
-     */
-    public function put($provider, $options): ApiClient
-    {
-        $uri = config('env.dev.login_url') . "/$provider";
-
-        return $this->request("PUT", $uri, $options);
-    }
-
-    /**
-     * Helper method to make patch requests
-     *
-     * @param string $provider
-     * @param array $options
-     *
-     * @return \App\Collaborators\ApiClient
-     */
-    public function patch($provider, $options): ApiClient
-    {
-        $uri = config('env.dev.login_url') . "/$provider";
-
-        return $this->request("PATCH", $uri, $options);
     }
 
     /**

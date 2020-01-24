@@ -37,15 +37,13 @@ class AuthController extends Controller
 
         try {
             if ($request->has('soapbox-slug')) {
-                $response = $this->apiClient->post($request->get('provider'), [
-                    'form_params' => [
-                        'code' => $request->get('oauth_code'),
-                        'soapbox-slug' => $request->get('soapbox-slug'),
-                        'redirectUri' => $request->get('redirectUri')
-                    ]
+                $this->apiClient->post($request->get('provider'), [
+                    'code' => $request->get('oauth_code'),
+                    'soapbox-slug' => $request->get('soapbox-slug'),
+                    'redirectUri' => $request->get('redirectUri')
                 ]);
 
-                $token = $response->getContents()->token;
+                $token = $this->apiClient->getContents()->token;
             } else {
                 $token = $this->token_service->generateToken([
                     'provider' => $request->get('provider'),
