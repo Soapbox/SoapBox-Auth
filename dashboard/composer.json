@@ -13,7 +13,7 @@
         "fideloper/proxy": "^4.0",
         "firebase/php-jwt": "^5.0",
         "guzzlehttp/guzzle": "^6.5",
-        "laravel/framework": "^6.2",
+        "laravel/framework": "6.11",
         "laravel/tinker": "^2.0",
         "league/oauth2-google": "^3.0",
         "sentry/sentry-laravel": "^1.5"
