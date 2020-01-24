@@ -6,6 +6,7 @@ use GuzzleHttp\Client;
 use App\Collaborators\ApiClient;
 use Illuminate\Support\ServiceProvider;
 use App\Collaborators\Adapters\GuzzleAdapter;
+use JSHayes\FakeRequests\ClientFactory;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -22,7 +23,9 @@ class AppServiceProvider extends ServiceProvider
         );
 
         $this->app->bind('api-client', function ($app) {
-            return new ApiClient(new GuzzleAdapter($app->make(Client::class)));
+            return new ApiClient(
+                new GuzzleAdapter($app->make(ClientFactory::class)->make())
+            );
         });
     }
 }

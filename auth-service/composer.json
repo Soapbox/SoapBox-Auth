@@ -10,6 +10,7 @@
         "firebase/php-jwt": "^5.0",
         "guzzlehttp/guzzle": "^6.5",
         "illuminate/redis": "^6.3",
+        "jshayes/fake-requests": "^3.0",
         "laravel/lumen-framework": "^6.0",
         "laravel/socialite": "^4.2",
         "nesbot/carbon": "^2.27",

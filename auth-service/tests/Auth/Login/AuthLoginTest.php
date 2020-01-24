@@ -5,9 +5,12 @@ use Illuminate\Http\Response;
 use App\Libraries\FirebaseJWTLibrary;
 use Illuminate\Support\Facades\Cache;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use JSHayes\FakeRequests\Traits\Laravel\FakeRequests;
 
 class AuthLoginTest extends TestCase
 {
+    use FakeRequests;
+
     protected $test_oauth_code = "ya29.Il-pBx5aS_JhAMwcBo5Ip_cWZ9W19TEYzRKlcLLqZkN4PaFEnrl24y8tXldBR-pPtWxKnwHKa8cpSsuxJXyW2OngfTwVS5G6HKe-KI3pXlP_3C0UdR1XRhYv1ebVwK-fgA";
     protected $abstractUser;
     protected $provider;
@@ -90,16 +93,18 @@ class AuthLoginTest extends TestCase
 
     public function assertCanLogInWithSoapboxSlug()
     {
-        //Guzzle mock
-        $client = Mockery::mock(Client::class);
-        $response = new GuzzleResponse(
-            Response::HTTP_OK,
-            [],
-            json_encode(['token' => $this->test_token])
-        );
-        $client->shouldReceive('request')->andReturn($response);
+        $uri = config('env.dev.login_url') . '/google';
 
-        $this->app->instance(Client::class, $client);
+        $handler = $this->fakeRequests();
+        $handler
+            ->post($uri)
+            ->respondWith(
+                new GuzzleResponse(
+                    Response::HTTP_OK,
+                    [],
+                    json_encode(['token' => $this->test_token])
+                )
+            );
 
         $this->json('POST', 'login', [
             'oauth_code' => $this->test_oauth_code,
