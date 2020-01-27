@@ -15,6 +15,9 @@ class ApiClient
      */
     private $client;
 
+    /**
+     * @var string
+     */
     private $base_url;
 
     /**

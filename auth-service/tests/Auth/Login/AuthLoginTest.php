@@ -31,11 +31,11 @@ class AuthLoginTest extends TestCase
 
     public function testOnlySupportedProvidersAreAllowed()
     {
-        $example = ['gogle', 'slck', 'micrsoft', 'unsupported']; //typos or more generic
+        $example = 'gogle'; //typo in the provider
 
         $this->json('POST', '/login', [
             'oauth_code' => $this->test_oauth_code,
-            'provider' => $example[array_rand($example, 1)]
+            'provider' => $example
         ])
             ->seeJson([
                 'provider' => ['The selected provider is invalid.']

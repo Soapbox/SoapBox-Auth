@@ -11,7 +11,14 @@ use App\Services\TokenGeneratorService;
 
 class AuthController extends Controller
 {
+    /**
+     * @var \App\Collaborators\ApiClient
+     */
     private $apiClient;
+
+    /**
+     * @var \App\Services\TokenGeneratorService
+     */
     private $token_service;
 
     public function __construct(iJWTLibrary $library)
