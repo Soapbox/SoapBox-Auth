@@ -32,7 +32,7 @@
     },
     {
         "service": "auth",
-        "base-url": "auth-service.test",
+        "base-url": "auth.services.soapboxdev.com",
         "protocol": "http",
         "endpoints": {
             "POST": {

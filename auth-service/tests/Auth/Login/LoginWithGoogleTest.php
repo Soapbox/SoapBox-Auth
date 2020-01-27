@@ -1,5 +1,6 @@
 <?php
 
+use GuzzleHttp\Client;
 use Laravel\Socialite\Facades\Socialite;
 
 class LoginWithGoogleTest extends AuthLoginTest
@@ -27,11 +28,16 @@ class LoginWithGoogleTest extends AuthLoginTest
 
 	public function testAssertStatusCodeIs200()
 	{
-		$this->assertAssertStatusCodeIs200();
+		$this->assertStatusCodeIs200();
 	}
 
 	public function testSeeJWTInRedisAfterSuccessfulLogin()
 	{
 		$this->assertSeeJWTInRedisAfterSuccessfulLogin();
 	}
+
+	public function testCanLoginWithSoapboxSlug()
+    {
+        $this->assertCanLogInWithSoapboxSlug();
+    }
 }

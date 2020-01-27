@@ -27,7 +27,7 @@ class LoginWithMicrosoftTest extends AuthLoginTest
 
 	public function testAssertStatusCodeIs200()
 	{
-		$this->assertAssertStatusCodeIs200();
+		$this->assertStatusCodeIs200();
 	}
 
 	public function testSeeJWTInRedisAfterSuccessfulLogin()

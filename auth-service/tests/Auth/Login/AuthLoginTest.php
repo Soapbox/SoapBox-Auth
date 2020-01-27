@@ -1,93 +1,122 @@
 <?php
 
+use GuzzleHttp\Client;
+use Illuminate\Http\Response;
+use App\Libraries\FirebaseJWTLibrary;
 use Illuminate\Support\Facades\Cache;
+use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use JSHayes\FakeRequests\Traits\Laravel\FakeRequests;
 
 class AuthLoginTest extends TestCase
 {
-	protected $test_oauth_code = "ya29.Il-pBx5aS_JhAMwcBo5Ip_cWZ9W19TEYzRKlcLLqZkN4PaFEnrl24y8tXldBR-pPtWxKnwHKa8cpSsuxJXyW2OngfTwVS5G6HKe-KI3pXlP_3C0UdR1XRhYv1ebVwK-fgA";
-	protected $abstractUser;
-	protected $provider;
+    use FakeRequests;
 
-	public function testValidations()
-	{
-		$this->json(
-			'POST', '/login', [
-				'oauth_code' => '',
-				'provider' => '',
-			]
-		)->seeJson(
-			[
-				'oauth_code' => [
-					'The oauth code field is required.'
-				],
-				'provider' => [
-					'The provider field is required.'
-				]
-			]
-		)->assertResponseStatus(422);
-	}
+    protected $test_oauth_code = "ya29.Il-pBx5aS_JhAMwcBo5Ip_cWZ9W19TEYzRKlcLLqZkN4PaFEnrl24y8tXldBR-pPtWxKnwHKa8cpSsuxJXyW2OngfTwVS5G6HKe-KI3pXlP_3C0UdR1XRhYv1ebVwK-fgA";
+    protected $abstractUser;
+    protected $provider;
+    protected $test_token = "ya29.Il-pBx5aS_JhAMwcBo5Ip_cWZ9W19TEYzRKlcLLqZkN4PaFEnrl24y8tXldBR-pPtWxKnwHKa8cpSsuxJXyW2OngfTwVS5G6HKe-KI3pXlP_3C0UdR1XRhYv1ebVwK-fgA";
 
-	public function testOnlySupportedProvidersAreAllowed()
-	{
-		$example = ['gogle', 'slck', 'micrsoft', 'unsupported']; //typos or more generic
+    public function testValidations()
+    {
+        $this->json('POST', '/login', [
+            'oauth_code' => '',
+            'provider' => ''
+        ])
+            ->seeJson([
+                'oauth_code' => ['The oauth code field is required.'],
+                'provider' => ['The provider field is required.']
+            ])
+            ->assertResponseStatus(422);
+    }
 
-		$this->json(
-			'POST', '/login', [
-				'oauth_code' => $this->test_oauth_code,
-				'provider' => $example[array_rand($example, 1)],
-			]
-		)->seeJson(
-			[
-				'provider' => [
-					'The selected provider is invalid.'
-				]
-			]
-		)->assertResponseStatus(422);
-	}
+    public function testOnlySupportedProvidersAreAllowed()
+    {
+        $example = 'gogle'; //typo in the provider
 
-	public function assertCanGenerateJWTTokenForValidUser()
-	{
-		$res = $this->json('POST', '/login', [
-			'oauth_code' => $this->test_oauth_code,
-			'provider' => $this->driver,
-		]);
+        $this->json('POST', '/login', [
+            'oauth_code' => $this->test_oauth_code,
+            'provider' => $example
+        ])
+            ->seeJson([
+                'provider' => ['The selected provider is invalid.']
+            ])
+            ->assertResponseStatus(422);
+    }
 
-		$obj = json_decode($res->response->getContent());
-		$token = $obj->{'token'};
-		$jwt_library = new \App\Libraries\FirebaseJWTLibrary();
-		$decoded_payload = $jwt_library->decode($token);
-		$this->assertSame($this->abstractUser->getName(), $decoded_payload->name);
-		$this->assertSame($this->abstractUser->getEmail(), $decoded_payload->email);
-	}
+    public function assertCanGenerateJWTTokenForValidUser()
+    {
+        $res = $this->json('POST', '/login', [
+            'oauth_code' => $this->test_oauth_code,
+            'provider' => $this->driver
+        ]);
 
-	public function assertAssertStatusCodeIs200()
-	{
-		$this->json('POST', '/login', [
-			'oauth_code' => $this->test_oauth_code,
-			'provider' => $this->driver,
-		])->seeJsonStructure(
-			[
-				'token',
-				'message'
-			]
-		)->seeJson(
-			[
-				'message' => 'Success.'
-			]
-		)->assertResponseStatus(200);
-	}
+        $obj = json_decode($res->response->getContent());
+        $token = $obj->{'token'};
+        $jwt_library = new FirebaseJWTLibrary();
+        $decoded_payload = $jwt_library->decode($token);
+        $this->assertSame(
+            $this->abstractUser->getName(),
+            $decoded_payload->name
+        );
+        $this->assertSame(
+            $this->abstractUser->getEmail(),
+            $decoded_payload->email
+        );
+    }
 
-	public function assertSeeJWTInRedisAfterSuccessfulLogin()
-	{
-		$res = $this->json('POST', '/login', [
-			'oauth_code' => $this->test_oauth_code,
-			'provider' => $this->driver,
-		]);
+    public function assertStatusCodeIs200()
+    {
+        $this->json('POST', '/login', [
+            'oauth_code' => $this->test_oauth_code,
+            'provider' => $this->driver
+        ])
+            ->seeJsonStructure(['token', 'message'])
+            ->seeJson([
+                'message' => 'Success.'
+            ])
+            ->assertResponseStatus(200);
+    }
 
-		$obj = json_decode($res->response->getContent());
-		$token = $obj->{'token'};
+    public function assertSeeJWTInRedisAfterSuccessfulLogin()
+    {
+        $res = $this->json('POST', '/login', [
+            'oauth_code' => $this->test_oauth_code,
+            'provider' => $this->driver
+        ]);
 
-		//assert the token is infact in Redis
-		$this->assertTrue(Cache::has($token));
-	}
+        $obj = json_decode($res->response->getContent());
+        $token = $obj->{'token'};
+
+        //assert the token is infact in Redis
+        $this->assertTrue(Cache::has($token));
+    }
+
+    public function assertCanLogInWithSoapboxSlug()
+    {
+        $uri = config('env.dev.login_url') . '/google';
+
+        $handler = $this->fakeRequests();
+        $handler
+            ->post($uri)
+            ->respondWith(
+                new GuzzleResponse(
+                    Response::HTTP_OK,
+                    [],
+                    json_encode(['token' => $this->test_token])
+                )
+            );
+
+        $this->json('POST', 'login', [
+            'oauth_code' => $this->test_oauth_code,
+            'soapbox-slug' => 'test_slug',
+            'redirectUri' => 'the_redirect_url',
+            'provider' => 'google'
+        ])
+            ->seeJsonStructure(['token', 'message'])
+            ->seeJson([
+                'message' => 'Success.',
+                'token' => $this->test_token
+            ])
+            ->assertResponseStatus(200);
+    }
 }

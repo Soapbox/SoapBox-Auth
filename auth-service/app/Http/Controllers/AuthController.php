@@ -11,62 +11,90 @@ use App\Services\TokenGeneratorService;
 
 class AuthController extends Controller
 {
-	protected $token_service;
+    /**
+     * @var \App\Collaborators\ApiClient
+     */
+    private $apiClient;
 
-	public function __construct(iJWTLibrary $library)
-	{
-		$this->token_service = new TokenGeneratorService($library);
-	}
+    /**
+     * @var \App\Services\TokenGeneratorService
+     */
+    private $token_service;
 
-	/**
-	 * @param Request $request
-	 * @return \Illuminate\Http\Response
-	 * @throws \Illuminate\Validation\ValidationException
-	 */
-	public function login(Request $request)
-	{
-		$this->validate($request, [
-			'oauth_code' 	=> 'required|string',
-			'provider' 		=> 'required|in:'. implode(',', config('support.providers'))
-		]);
+    public function __construct(iJWTLibrary $library)
+    {
+        $this->token_service = new TokenGeneratorService($library);
+        $this->apiClient = app()->make('api-client');
+    }
 
-		try {
-			$token = $this->token_service->generateToken([
-				'provider' => $request->provider,
-				'code' => $request->oauth_code
-			]);
+    /**
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Validation\ValidationException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     */
+    public function login(Request $request): Response
+    {
+        $this->validate($request, [
+            'oauth_code' => 'required|string',
+            'provider' =>
+                'required|in:' . implode(',', config('support.providers'))
+        ]);
 
-			if ($token) {
-				$ttl = Carbon::now()->addDays(91); //3months + 1 day
-				Cache::add($token, '', $ttl);
-			}
+        try {
+            if ($request->has('soapbox-slug')) {
+                $this->apiClient->post($request->get('provider'), [
+                    'code' => $request->get('oauth_code'),
+                    'soapbox-slug' => $request->get('soapbox-slug'),
+                    'redirectUri' => $request->get('redirectUri')
+                ]);
 
-			return response(
-				[
-					"token" => $token,
-					"message" => "Success."
-				], Response::HTTP_OK
-			);
+                $token = $this->apiClient->getContents()->token;
+            } else {
+                $token = $this->token_service->generateToken([
+                    'provider' => $request->get('provider'),
+                    'code' => $request->get('oauth_code')
+                ]);
+            }
 
-		} catch (\Exception $e) {
-			log_exception($e);
+            if ($token) {
+                $ttl = Carbon::now()->addDays(91); //3months + 1 day
+                Cache::add($token, '', $ttl);
+            }
 
-			return response(
-				[
-					"token" => null,
-					"message" => $e->getMessage()
-				], http_code_by_exception_type($e)
-			);
-		}
-	}
+            return response(
+                [
+                    "token" => $token,
+                    "message" => "Success."
+                ],
+                Response::HTTP_OK
+            );
+        } catch (\Exception $e) {
+            log_exception($e);
 
-	public function logout(Request $request)
-	{
-		$token = $request->bearerToken();
+            return response(
+                [
+                    "token" => null,
+                    "message" => $e->getMessage()
+                ],
+                http_code_by_exception_type($e)
+            );
+        }
+    }
 
-		if (Cache::has($token)){
-			Cache::forget($token);
-			return response(null, Response::HTTP_OK);
-		}
-	}
+    /**
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function logout(Request $request): Response
+    {
+        $token = $request->bearerToken();
+
+        if (Cache::has($token)) {
+            Cache::forget($token);
+            return response(null, Response::HTTP_OK);
+        }
+    }
 }
