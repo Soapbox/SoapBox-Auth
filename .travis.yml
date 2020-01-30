@@ -1,0 +1,23 @@
+language: php
+
+dist: trusty
+
+php:
+  - 7.2.11
+
+env:
+  - DB=mysql
+
+services:
+  - mysql
+  - redis-server
+
+before_install:
+  - phpenv config-rm xdebug.ini
+  - mysql -u root -e "CREATE USER 'homestead'@'localhost' IDENTIFIED BY 'secret';"
+  - mysql -u root -e "GRANT ALL ON *.* TO 'homestead'@'localhost';"
+  - composer self-update && composer install -n --prefer-dist --no-scripts -d .
+
+script:
+  - php artisan --env=example
+  - ./vendor/bin/phpunit --configuration phpunit.xml
