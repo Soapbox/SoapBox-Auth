@@ -25,7 +25,9 @@ View the functional designs below:
     -   URLs:
         -   `http` is different from `https`
         -   `http://url.com` is different from `http://url.com/`
-    -   The client, secret and redirect url (used when using legacy auth) must match whatever values used on the frontend \
+    -   The client, secret and redirect url (used when using legacy auth) must match whatever values used on the frontend
+    -   Redis:
+        -   Same credentials (REDIS_HOST, REDIS_PORT and REDIS_DATABASE) as API-Gateway
 
 -   Run `composer install`
 
