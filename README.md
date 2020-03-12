@@ -19,8 +19,9 @@ View the functional designs below:
 
 ## Setup instructions
 
--   create .env file (copy .env.example and tweak as necessary) \
-    Be careful to put in correct values for all providers Here are a few pitfalls for some of the `env` variables
+-   create .env file (copy .env.example. It already has working values for the variables you need to change). \
+    Be careful to put in correct values for all providers. \
+    Here are a few pitfalls for some of the `env` variables
 
     -   URLs:
         -   `http` is different from `https`
