@@ -1,7 +1,11 @@
 {
     "name": "laravel/lumen",
     "description": "The Laravel Lumen Framework.",
-    "keywords": ["framework", "laravel", "lumen"],
+    "keywords": [
+        "framework",
+        "laravel",
+        "lumen"
+    ],
     "license": "MIT",
     "type": "project",
     "require": {
@@ -11,13 +15,13 @@
         "guzzlehttp/guzzle": "^6.5",
         "illuminate/redis": "^6.3",
         "jshayes/fake-requests": "^3.0",
-        "laravel/lumen-framework": "^6.0",
         "laravel/socialite": "^4.2",
         "nesbot/carbon": "^2.27",
         "predis/predis": "^1.1",
         "socialiteproviders/google": "^3.0",
         "socialiteproviders/microsoft-graph": "^2.1",
-        "socialiteproviders/slack": "^3.1"
+        "socialiteproviders/slack": "^3.1",
+        "laravel/framework": "^6.0"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.4",
