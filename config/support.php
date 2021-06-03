@@ -1,7 +1,7 @@
 <?php
 
 return [
-	"providers" => [
-		'google', 'slack', 'graph'
-	]
+    'providers' => [
+        'google', 'slack', 'graph',
+    ],
 ];

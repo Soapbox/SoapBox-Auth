@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Libraries\iJWTLibrary;
+use App\Services\TokenGeneratorService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use App\Libraries\iJWTLibrary;
 use Illuminate\Support\Facades\Cache;
-use App\Services\TokenGeneratorService;
 
 class AuthController extends Controller
 {
@@ -38,8 +38,7 @@ class AuthController extends Controller
     {
         $this->validate($request, [
             'oauth_code' => 'required|string',
-            'provider' =>
-                'required|in:' . implode(',', config('support.providers'))
+            'provider' => 'required|in:'.implode(',', config('support.providers')),
         ]);
 
         try {
@@ -47,14 +46,14 @@ class AuthController extends Controller
                 $this->apiClient->post($request->get('provider'), [
                     'code' => $request->get('oauth_code'),
                     'soapbox-slug' => $request->get('soapbox-slug'),
-                    'redirectUri' => $request->get('redirectUri')
+                    'redirectUri' => $request->get('redirectUri'),
                 ]);
 
                 $token = $this->apiClient->getContents()->token;
             } else {
                 $token = $this->token_service->generateToken([
                     'provider' => $request->get('provider'),
-                    'code' => $request->get('oauth_code')
+                    'code' => $request->get('oauth_code'),
                 ]);
             }
 
@@ -65,8 +64,8 @@ class AuthController extends Controller
 
             return response(
                 [
-                    "token" => $token,
-                    "message" => "Success."
+                    'token' => $token,
+                    'message' => 'Success.',
                 ],
                 Response::HTTP_OK
             );
@@ -75,8 +74,8 @@ class AuthController extends Controller
 
             return response(
                 [
-                    "token" => null,
-                    "message" => $e->getMessage()
+                    'token' => null,
+                    'message' => $e->getMessage(),
                 ],
                 http_code_by_exception_type($e)
             );
@@ -94,6 +93,7 @@ class AuthController extends Controller
 
         if (Cache::has($token)) {
             Cache::forget($token);
+
             return response(null, Response::HTTP_OK);
         }
     }

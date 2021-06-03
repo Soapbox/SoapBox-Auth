@@ -2,10 +2,10 @@
 
 namespace App\Collaborators;
 
-use Illuminate\Http\Response;
 use App\Collaborators\Contracts\iClient;
 use App\Exceptions\MethodNotAllowedException;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use Illuminate\Http\Response;
 use stdClass;
 
 class ApiClient
@@ -50,9 +50,9 @@ class ApiClient
         string $uri = '',
         array $options = []
     ): GuzzleResponse {
-        if (!in_array($method, $this->allowed_methods)) {
+        if (! in_array($method, $this->allowed_methods)) {
             throw new MethodNotAllowedException(
-                "Method not allowed.",
+                'Method not allowed.',
                 Response::HTTP_METHOD_NOT_ALLOWED
             );
         }
@@ -72,13 +72,13 @@ class ApiClient
      */
     public function post(string $path, array $options): GuzzleResponse
     {
-        $uri = $this->base_url . "/$path";
+        $uri = $this->base_url."/$path";
 
         $options = [
-            "json" => $options
+            'json' => $options,
         ];
 
-        return $this->request("POST", $uri, $options);
+        return $this->request('POST', $uri, $options);
     }
 
     /**

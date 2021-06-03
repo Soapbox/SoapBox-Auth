@@ -1,30 +1,30 @@
 <?php
 
-use GuzzleHttp\Client;
-use Illuminate\Http\Response;
 use App\Libraries\FirebaseJWTLibrary;
-use Illuminate\Support\Facades\Cache;
+use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Cache;
 use JSHayes\FakeRequests\Traits\Laravel\FakeRequests;
 
 class AuthLoginTest extends TestCase
 {
     use FakeRequests;
 
-    protected $test_oauth_code = "ya29.Il-pBx5aS_JhAMwcBo5Ip_cWZ9W19TEYzRKlcLLqZkN4PaFEnrl24y8tXldBR-pPtWxKnwHKa8cpSsuxJXyW2OngfTwVS5G6HKe-KI3pXlP_3C0UdR1XRhYv1ebVwK-fgA";
+    protected $test_oauth_code = 'ya29.Il-pBx5aS_JhAMwcBo5Ip_cWZ9W19TEYzRKlcLLqZkN4PaFEnrl24y8tXldBR-pPtWxKnwHKa8cpSsuxJXyW2OngfTwVS5G6HKe-KI3pXlP_3C0UdR1XRhYv1ebVwK-fgA';
     protected $abstractUser;
     protected $provider;
-    protected $test_token = "ya29.Il-pBx5aS_JhAMwcBo5Ip_cWZ9W19TEYzRKlcLLqZkN4PaFEnrl24y8tXldBR-pPtWxKnwHKa8cpSsuxJXyW2OngfTwVS5G6HKe-KI3pXlP_3C0UdR1XRhYv1ebVwK-fgA";
+    protected $test_token = 'ya29.Il-pBx5aS_JhAMwcBo5Ip_cWZ9W19TEYzRKlcLLqZkN4PaFEnrl24y8tXldBR-pPtWxKnwHKa8cpSsuxJXyW2OngfTwVS5G6HKe-KI3pXlP_3C0UdR1XRhYv1ebVwK-fgA';
 
     public function testValidations()
     {
         $this->json('POST', '/login', [
             'oauth_code' => '',
-            'provider' => ''
+            'provider' => '',
         ])
             ->seeJson([
                 'oauth_code' => ['The oauth code field is required.'],
-                'provider' => ['The provider field is required.']
+                'provider' => ['The provider field is required.'],
             ])
             ->assertResponseStatus(422);
     }
@@ -35,10 +35,10 @@ class AuthLoginTest extends TestCase
 
         $this->json('POST', '/login', [
             'oauth_code' => $this->test_oauth_code,
-            'provider' => $example
+            'provider' => $example,
         ])
             ->seeJson([
-                'provider' => ['The selected provider is invalid.']
+                'provider' => ['The selected provider is invalid.'],
             ])
             ->assertResponseStatus(422);
     }
@@ -47,7 +47,7 @@ class AuthLoginTest extends TestCase
     {
         $res = $this->json('POST', '/login', [
             'oauth_code' => $this->test_oauth_code,
-            'provider' => $this->driver
+            'provider' => $this->driver,
         ]);
 
         $obj = json_decode($res->response->getContent());
@@ -68,11 +68,11 @@ class AuthLoginTest extends TestCase
     {
         $this->json('POST', '/login', [
             'oauth_code' => $this->test_oauth_code,
-            'provider' => $this->driver
+            'provider' => $this->driver,
         ])
             ->seeJsonStructure(['token', 'message'])
             ->seeJson([
-                'message' => 'Success.'
+                'message' => 'Success.',
             ])
             ->assertResponseStatus(200);
     }
@@ -81,7 +81,7 @@ class AuthLoginTest extends TestCase
     {
         $res = $this->json('POST', '/login', [
             'oauth_code' => $this->test_oauth_code,
-            'provider' => $this->driver
+            'provider' => $this->driver,
         ]);
 
         $obj = json_decode($res->response->getContent());
@@ -93,7 +93,7 @@ class AuthLoginTest extends TestCase
 
     public function assertCanLogInWithSoapboxSlug()
     {
-        $uri = config('env.dev.login_url') . '/google';
+        $uri = config('env.dev.login_url').'/google';
 
         $handler = $this->fakeRequests();
         $handler
@@ -110,12 +110,12 @@ class AuthLoginTest extends TestCase
             'oauth_code' => $this->test_oauth_code,
             'soapbox-slug' => 'test_slug',
             'redirectUri' => 'the_redirect_url',
-            'provider' => 'google'
+            'provider' => 'google',
         ])
             ->seeJsonStructure(['token', 'message'])
             ->seeJson([
                 'message' => 'Success.',
-                'token' => $this->test_token
+                'token' => $this->test_token,
             ])
             ->assertResponseStatus(200);
     }

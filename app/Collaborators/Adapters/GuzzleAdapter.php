@@ -2,10 +2,10 @@
 
 namespace App\Collaborators\Adapters;
 
-use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Stream;
-use GuzzleHttp\Psr7\Response;
 use App\Collaborators\Contracts\iClient;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\Stream;
 
 final class GuzzleAdapter implements iClient
 {
@@ -41,6 +41,7 @@ final class GuzzleAdapter implements iClient
     public function request($method, $uri, $params): Response
     {
         $this->response = $this->client->request($method, $uri, $params);
+
         return $this->response;
     }
 

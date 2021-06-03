@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use GuzzleHttp\Client;
-use App\Collaborators\ApiClient;
-use Illuminate\Support\ServiceProvider;
 use App\Collaborators\Adapters\GuzzleAdapter;
+use App\Collaborators\ApiClient;
+use GuzzleHttp\Client;
+use Illuminate\Support\ServiceProvider;
 use JSHayes\FakeRequests\ClientFactory;
 
 class AppServiceProvider extends ServiceProvider
