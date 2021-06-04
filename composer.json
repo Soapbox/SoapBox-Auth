@@ -4,14 +4,20 @@
     "keywords": ["framework", "laravel", "lumen"],
     "license": "MIT",
     "type": "project",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Soapbox/fake-requests"
+        }
+    ],
     "require": {
         "php": "^7.2",
         "ext-json": "*",
         "firebase/php-jwt": "^5.0",
         "guzzlehttp/guzzle": "^6.5",
-        "illuminate/redis": "^6.3",
-        "jshayes/fake-requests": "^3.0",
-        "laravel/lumen-framework": "^6.0",
+        "illuminate/redis": "^7.0",
+        "jshayes/fake-requests": "^4.0",
+        "laravel/lumen-framework": "^7.0",
         "laravel/socialite": "^4.2",
         "nesbot/carbon": "^2.27",
         "predis/predis": "^1.1",
