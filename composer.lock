@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "29fca362c5757fc8c107eba3510cbc8f",
+    "content-hash": "a0f79ad1e4b0bbb7ac9a6ad14127d960",
     "packages": [
         {
             "name": "brick/math",
@@ -5357,22 +5357,22 @@
         },
         {
             "name": "socialiteproviders/google",
-            "version": "v3.1.0",
+            "version": "4.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SocialiteProviders/Google-Plus.git",
-                "reference": "32de376b9ae29765c09f8e4a4ea022154605231b"
+                "reference": "1cb8f6fb2c0dd0fc8b34e95f69865663fdf0b401"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SocialiteProviders/Google-Plus/zipball/32de376b9ae29765c09f8e4a4ea022154605231b",
-                "reference": "32de376b9ae29765c09f8e4a4ea022154605231b",
+                "url": "https://api.github.com/repos/SocialiteProviders/Google-Plus/zipball/1cb8f6fb2c0dd0fc8b34e95f69865663fdf0b401",
+                "reference": "1cb8f6fb2c0dd0fc8b34e95f69865663fdf0b401",
                 "shasum": ""
             },
             "require": {
                 "ext-json": "*",
-                "php": "^5.6 || ^7.0",
-                "socialiteproviders/manager": "~2.0 || ~3.0"
+                "php": "^7.2 || ^8.0",
+                "socialiteproviders/manager": "~4.0"
             },
             "type": "library",
             "autoload": {
@@ -5392,32 +5392,32 @@
             ],
             "description": "Google OAuth2 Provider for Laravel Socialite",
             "support": {
-                "source": "https://github.com/SocialiteProviders/Google-Plus/tree/v3.1.0"
+                "source": "https://github.com/SocialiteProviders/Google-Plus/tree/4.1.0"
             },
-            "time": "2020-07-14T02:02:00+00:00"
+            "time": "2020-12-01T23:10:59+00:00"
         },
         {
             "name": "socialiteproviders/manager",
-            "version": "v3.6",
+            "version": "4.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SocialiteProviders/Manager.git",
-                "reference": "fc8dbcf0061f12bfe0cc347e9655af932860ad36"
+                "reference": "0f5e82af0404df0080bdc5c105cef936c1711524"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SocialiteProviders/Manager/zipball/fc8dbcf0061f12bfe0cc347e9655af932860ad36",
-                "reference": "fc8dbcf0061f12bfe0cc347e9655af932860ad36",
+                "url": "https://api.github.com/repos/SocialiteProviders/Manager/zipball/0f5e82af0404df0080bdc5c105cef936c1711524",
+                "reference": "0f5e82af0404df0080bdc5c105cef936c1711524",
                 "shasum": ""
             },
             "require": {
                 "illuminate/support": "^6.0|^7.0|^8.0",
                 "laravel/socialite": "~4.0|~5.0",
-                "php": "^7.2"
+                "php": "^7.2 || ^8.0"
             },
             "require-dev": {
                 "mockery/mockery": "^1.2",
-                "phpunit/phpunit": "^8.0"
+                "phpunit/phpunit": "^9.0"
             },
             "type": "library",
             "extra": {
@@ -5459,27 +5459,28 @@
             "homepage": "https://socialiteproviders.com/",
             "support": {
                 "issues": "https://github.com/SocialiteProviders/Manager/issues",
-                "source": "https://github.com/SocialiteProviders/Manager/tree/master"
+                "source": "https://github.com/SocialiteProviders/Manager/tree/4.0.1"
             },
-            "time": "2020-09-08T10:41:06+00:00"
+            "time": "2020-12-01T23:09:06+00:00"
         },
         {
             "name": "socialiteproviders/microsoft-graph",
-            "version": "v2.1",
+            "version": "4.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SocialiteProviders/Microsoft-Graph.git",
-                "reference": "c75235c63a7569e80893e3beee31f0d64dfb3f69"
+                "reference": "ce12e054cbf40074b41e418b40fe684de01e7726"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SocialiteProviders/Microsoft-Graph/zipball/c75235c63a7569e80893e3beee31f0d64dfb3f69",
-                "reference": "c75235c63a7569e80893e3beee31f0d64dfb3f69",
+                "url": "https://api.github.com/repos/SocialiteProviders/Microsoft-Graph/zipball/ce12e054cbf40074b41e418b40fe684de01e7726",
+                "reference": "ce12e054cbf40074b41e418b40fe684de01e7726",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.6 || ^7.0",
-                "socialiteproviders/manager": "~2.0 || ~3.0"
+                "ext-json": "*",
+                "php": "^7.2 || ^8.0",
+                "socialiteproviders/manager": "~4.0"
             },
             "type": "library",
             "autoload": {
@@ -5499,28 +5500,28 @@
             ],
             "description": "Microsoft Graph OAuth2 Provider for Laravel Socialite",
             "support": {
-                "issues": "https://github.com/SocialiteProviders/Microsoft-Graph/issues",
-                "source": "https://github.com/SocialiteProviders/Microsoft-Graph/tree/v2.1"
+                "source": "https://github.com/SocialiteProviders/Microsoft-Graph/tree/4.1.1"
             },
-            "time": "2019-01-11T19:48:14+00:00"
+            "time": "2020-12-07T22:18:26+00:00"
         },
         {
             "name": "socialiteproviders/slack",
-            "version": "v3.1",
+            "version": "4.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/SocialiteProviders/Slack.git",
-                "reference": "d46826640fbeae8f34328d99c358404a1e1050a3"
+                "reference": "2b781c95daf06ec87a8f3deba2ab613d6bea5e8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/SocialiteProviders/Slack/zipball/d46826640fbeae8f34328d99c358404a1e1050a3",
-                "reference": "d46826640fbeae8f34328d99c358404a1e1050a3",
+                "url": "https://api.github.com/repos/SocialiteProviders/Slack/zipball/2b781c95daf06ec87a8f3deba2ab613d6bea5e8d",
+                "reference": "2b781c95daf06ec87a8f3deba2ab613d6bea5e8d",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.6 || ^7.0",
-                "socialiteproviders/manager": "~2.0 || ~3.0"
+                "ext-json": "*",
+                "php": "^7.2 || ^8.0",
+                "socialiteproviders/manager": "~4.0"
             },
             "type": "library",
             "autoload": {
@@ -5540,9 +5541,9 @@
             ],
             "description": "Slack OAuth2 Provider for Laravel Socialite",
             "support": {
-                "source": "https://github.com/SocialiteProviders/Slack/tree/v3.1"
+                "source": "https://github.com/SocialiteProviders/Slack/tree/4.1.1"
             },
-            "time": "2019-01-11T19:48:14+00:00"
+            "time": "2021-03-26T04:10:10+00:00"
         },
         {
             "name": "symfony/console",
@@ -7942,7 +7943,7 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.2",
+        "php": "^8.0",
         "ext-json": "*"
     },
     "platform-dev": [],
