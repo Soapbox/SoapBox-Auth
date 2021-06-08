@@ -10,11 +10,6 @@ use App\Collaborators\Contracts\iClient;
 final class GuzzleAdapter implements iClient
 {
     /**
-     * @var \GuzzleHttp\Client
-     */
-    private $client;
-
-    /**
      * @var \GuzzleHttp\Psr7\Response
      */
     private $response;
@@ -24,9 +19,8 @@ final class GuzzleAdapter implements iClient
      *
      * @param \GuzzleHttp\Client
      */
-    public function __construct(Client $client)
+    public function __construct(private Client $client)
     {
-        $this->client = $client;
     }
 
     /**

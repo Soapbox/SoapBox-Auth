@@ -2,19 +2,14 @@
 
 namespace App\Collaborators;
 
+use stdClass;
 use Illuminate\Http\Response;
 use App\Collaborators\Contracts\iClient;
 use App\Exceptions\MethodNotAllowedException;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
-use stdClass;
 
 class ApiClient
 {
-    /**
-     * @var App\Collaborators\Contracts\iClient
-     */
-    private $client;
-
     /**
      * @var string
      */
@@ -30,9 +25,8 @@ class ApiClient
      *
      * @param \App\Collaborators\Contracts\iClient
      */
-    public function __construct(iClient $client)
+    public function __construct(private iClient $client)
     {
-        $this->client = $client;
         $this->base_url = config('env.dev.login_url');
     }
 

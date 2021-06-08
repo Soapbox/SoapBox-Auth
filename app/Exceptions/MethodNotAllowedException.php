@@ -2,6 +2,8 @@
 
 namespace App\Exceptions;
 
-use Exception;
+use Throwable;
 
-class MethodNotAllowedException extends Exception {}
+class MethodNotAllowedException extends Throwable
+{
+}

@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use GuzzleHttp\Client;
 use App\Collaborators\ApiClient;
 use Illuminate\Support\ServiceProvider;
 use App\Collaborators\Adapters\GuzzleAdapter;

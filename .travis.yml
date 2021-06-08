@@ -1,9 +1,9 @@
 language: php
 
-dist: trusty
+dist: bionic
 
 php:
-  - 7.3
+  - 8.0
 
 env:
   - DB=mysql

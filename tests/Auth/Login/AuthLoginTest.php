@@ -1,6 +1,5 @@
 <?php
 
-use GuzzleHttp\Client;
 use Illuminate\Http\Response;
 use App\Libraries\FirebaseJWTLibrary;
 use Illuminate\Support\Facades\Cache;
@@ -50,10 +49,8 @@ class AuthLoginTest extends TestCase
             'provider' => $this->driver
         ]);
 
-        $obj = json_decode($res->response->getContent());
-        $token = $obj->{'token'};
-        $jwt_library = new FirebaseJWTLibrary();
-        $decoded_payload = $jwt_library->decode($token);
+        $token = json_decode($res->response->getContent())->{'token'};
+        $decoded_payload = (new FirebaseJWTLibrary())->decode($token);
         $this->assertSame(
             $this->abstractUser->getName(),
             $decoded_payload->name
@@ -93,11 +90,8 @@ class AuthLoginTest extends TestCase
 
     public function assertCanLogInWithSoapboxSlug()
     {
-        $uri = config('env.dev.login_url') . '/google';
-
-        $handler = $this->fakeRequests();
-        $handler
-            ->post($uri)
+        $this->fakeRequests()
+            ->post(config('env.dev.login_url') . '/google')
             ->respondWith(
                 new GuzzleResponse(
                     Response::HTTP_OK,
