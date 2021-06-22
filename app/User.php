@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Models;
+namespace App;
 
 use Laravel\Lumen\Auth\Authorizable;
 use Illuminate\Auth\Authenticatable;
