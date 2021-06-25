@@ -5,8 +5,13 @@ dist: bionic
 php:
   - 8.0
 
-env:
-  - DB=mysql
+jobs:
+  fast_finish: true
+  include:
+    - php: 8.0
+      env: DB=mysql:5.7
+    - php: 8.0
+      env: DB=mysql:8.0
 
 services:
   - mysql
